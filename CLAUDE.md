@@ -1,8 +1,29 @@
 # PrepWise-Info — Cloudflare Pages Site
 
 Repo: tmgavron/PrepWise-Info
-Purpose: Legal documents website for PrepWise (Privacy Policy, Terms of Use)
-Hosting: Cloudflare Pages (static site, no build step)
+Purpose: PrepWise public website — legal documents + marketing landing page
+Hosting: Cloudflare Pages (static site for root, Next.js for landing/)
+
+## VECTOR Agent Access
+
+VECTOR (Marketing agent) has read/write access to this repository for content editing.
+- Focus areas: `PrepWise-Info`, `Landing Page`
+- Working directory: `~/repos/PrepWise-Info/`
+- Commit format: `[VECTOR] <description>`
+- Auto-deploys on push to main
+
+### Editable by VECTOR
+- `landing/src/components/*.tsx` — marketing copy, headlines, CTAs, features
+- `landing/src/app/page.tsx` — page structure
+- `landing/src/app/globals.css` — styles
+- `landing/src/components/constants.ts` — shared content
+- `landing/public/` — marketing assets
+- `index.html` — info page content
+- `robots.txt`, `sitemap.xml` — SEO
+
+### NOT editable by VECTOR
+- `wrangler.toml`, `_headers` — deployment/security config
+- `landing/next.config.ts`, `landing/package.json` — build config
 
 ---
 
