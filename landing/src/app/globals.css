@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* PrepWise brand colors (from Theme.js dark palette) */
+  --color-pw-bg: #0B1116;
+  --color-pw-bg-card: #0F1A23;
+  --color-pw-bg-card-alt: #0A2533;
+  --color-pw-bg-muted: rgba(255, 255, 255, 0.06);
+
+  --color-pw-text: #E6F1F8;
+  --color-pw-text-subtle: #B8C6D1;
+  --color-pw-text-muted: #9AB0BF;
+
+  --color-pw-brand: #308AFF;
+  --color-pw-brand-alt: #726DFF;
+  --color-pw-accent: #00B2FF;
+  --color-pw-link: #4FC3FF;
+  --color-pw-success: #4ADE80;
+  --color-pw-warning: #FFB44D;
+  --color-pw-danger: #FF5545;
+
+  --color-pw-border-soft: rgba(255, 255, 255, 0.12);
+  --color-pw-border-light: rgba(255, 255, 255, 0.30);
+  --color-pw-chip-bg: rgba(0, 170, 255, 0.12);
+  --color-pw-chip-border: rgba(0, 170, 255, 0.35);
+
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-pw-bg);
+  color: var(--color-pw-text);
+  font-family: var(--font-sans);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-pw-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-pw-border-soft);
+  border-radius: 3px;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(48, 138, 255, 0.3);
+  color: var(--color-pw-text);
+}

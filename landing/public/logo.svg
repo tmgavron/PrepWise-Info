@@ -1,0 +1,6 @@
+<!-- TODO: Replace with real PrepWise logo asset -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" fill="none">
+  <rect width="32" height="32" x="0" y="4" rx="8" fill="#308AFF"/>
+  <text x="8" y="27" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="700" fill="#fff">P</text>
+  <text x="40" y="28" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#E6F1F8">PrepWise</text>
+</svg>

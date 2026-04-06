@@ -1,0 +1,8 @@
+<!-- Apple "Download on the App Store" badge placeholder -->
+<!-- TODO: Replace with official Apple App Store badge from https://developer.apple.com/app-store/marketing/guidelines/ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <rect width="120" height="40" rx="6" fill="#000"/>
+  <rect x="0.5" y="0.5" width="119" height="39" rx="5.5" stroke="#A6A6A6"/>
+  <text x="60" y="15" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="7" fill="#fff">Download on the</text>
+  <text x="60" y="28" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#fff">App Store</text>
+</svg>

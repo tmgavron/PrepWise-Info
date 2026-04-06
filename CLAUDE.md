@@ -1,6 +1,6 @@
-# PrepWise-Legal — Cloudflare Pages Site
+# PrepWise-Info — Cloudflare Pages Site
 
-Repo: tmgavron/PrepWise-Legal
+Repo: tmgavron/PrepWise-Info
 Purpose: Legal documents website for PrepWise (Privacy Policy, Terms of Use)
 Hosting: Cloudflare Pages (static site, no build step)
 
@@ -9,7 +9,7 @@ Hosting: Cloudflare Pages (static site, no build step)
 ## Site Structure
 
 ```
-PrepWise-Legal/
+PrepWise-Info/
 ├── index.html       ← Landing page with links to legal docs
 ├── privacy.html     ← Privacy Policy (effective 2026-03-09)
 ├── terms.html       ← Terms of Use / EULA (effective 2026-03-09)
@@ -45,7 +45,7 @@ Target domain: `legal.prepwise.app`
 
 1. Log in to Cloudflare dashboard
 2. Go to Workers & Pages → Create application → Pages
-3. Connect to GitHub → select tmgavron/PrepWise-Legal
+3. Connect to GitHub → select tmgavron/PrepWise-Info
 4. Build settings:
    - Build command: (leave empty — pure static)
    - Build output directory: `/`
@@ -62,7 +62,7 @@ After initial deployment:
 ### Local Development
 
 ```bash
-cd ~/repos/PrepWise-Legal
+cd ~/repos/PrepWise-Info
 npx wrangler pages dev .
 # Serves at http://localhost:8788
 ```
@@ -70,8 +70,8 @@ npx wrangler pages dev .
 ### Manual Deploy (CLI)
 
 ```bash
-cd ~/repos/PrepWise-Legal
-npx wrangler pages deploy . --project-name=prepwise-legal
+cd ~/repos/PrepWise-Info
+npx wrangler pages deploy . --project-name=prepwise-info
 ```
 
 Requires `wrangler login` first (browser-based OAuth).
