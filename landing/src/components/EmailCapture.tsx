@@ -80,11 +80,11 @@ export default function EmailCapture() {
         className="mx-auto max-w-xl text-center"
       >
         <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-          Get Notified When PrepWise Launches
+          Meal Planning That Starts With What You Have
         </h2>
         <p className="text-pw-text-subtle mb-8">
-          Be the first to know. Join the waitlist for early access and
-          launch-day deals.
+          PrepWise is launching on the App Store soon. Join the waitlist for
+          early access and launch-day pricing.
         </p>
 
         {status === "success" ? (

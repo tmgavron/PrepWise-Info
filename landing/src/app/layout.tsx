@@ -9,22 +9,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PrepWise — AI-Powered Meal Planning",
+  title: "PrepWise — Meal Planner & Pantry Tracker",
   description:
-    "Plan meals based on what's in your pantry. AI-powered recipes, smart shopping lists, and macro tracking.",
+    "Stop guessing what to cook. PrepWise plans meals from your pantry, tracks macros, and writes your shopping list automatically.",
   openGraph: {
-    title: "PrepWise — AI-Powered Meal Planning",
+    title: "PrepWise — Meal Planner & Pantry Tracker",
     description:
-      "Plan meals based on what's in your pantry. AI-powered recipes, smart shopping lists, and macro tracking.",
+      "Stop guessing what to cook. PrepWise plans meals from your pantry, tracks macros, and writes your shopping list automatically.",
     type: "website",
     locale: "en_US",
     // TODO: Add siteName and url once domain is finalized
   },
   twitter: {
     card: "summary_large_image",
-    title: "PrepWise — AI-Powered Meal Planning",
+    title: "PrepWise — Meal Planner & Pantry Tracker",
     description:
-      "Plan meals based on what's in your pantry. AI-powered recipes, smart shopping lists, and macro tracking.",
+      "Stop guessing what to cook. PrepWise plans meals from your pantry, tracks macros, and writes your shopping list automatically.",
   },
   robots: {
     index: true,

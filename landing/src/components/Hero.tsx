@@ -20,15 +20,15 @@ export default function Hero() {
           className="flex flex-col gap-6"
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-            Meal Planning,{" "}
+            Stop Guessing{" "}
             <span className="bg-gradient-to-r from-pw-brand to-pw-accent bg-clip-text text-transparent">
-              Powered by Your Pantry
+              What to Cook
             </span>
           </h1>
           <p className="text-lg text-pw-text-subtle max-w-lg leading-relaxed">
-            AI-powered meal planning that knows what&apos;s in your kitchen.
-            Get personalized recipes, auto-generated shopping lists, and
-            effortless macro tracking — all in one app.
+            PrepWise sees exactly what&apos;s in your pantry and tells you
+            every meal you can make right now. No more waste. No more takeout
+            panic. Just smart, effortless meal planning.
           </p>
 
           {/* CTA */}

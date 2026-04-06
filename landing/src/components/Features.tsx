@@ -35,11 +35,12 @@ export default function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Everything You Need to Eat Better
+            The Complete Meal Planning Ecosystem
           </h2>
           <p className="text-pw-text-subtle max-w-2xl mx-auto">
-            From pantry tracking to meal planning to grocery lists — PrepWise
-            handles the hard parts so you can focus on cooking.
+            From pantry tracking to AI meal planning to automatic shopping
+            lists — PrepWise handles the hard parts so you can focus on
+            cooking.
           </p>
         </motion.div>
 
