@@ -9,8 +9,8 @@ export const APP_STORE_URL =
   process.env.NEXT_PUBLIC_APP_STORE_URL || "#";
 
 export const LEGAL_LINKS = {
-  privacy: "https://legal.prepwise.app/privacy",
-  terms: "https://legal.prepwise.app/terms",
+  privacy: "/privacy",
+  terms: "/terms",
 } as const;
 
 // TODO: Replace with real social URLs

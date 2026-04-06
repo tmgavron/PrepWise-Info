@@ -25,7 +25,7 @@ export default function Navbar() {
     >
       <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2" aria-label="PrepWise home">
+        <a href="/" className="flex items-center gap-2" aria-label="PrepWise home">
           <img src="/logo.svg" alt="PrepWise" className="h-8" />
         </a>
 

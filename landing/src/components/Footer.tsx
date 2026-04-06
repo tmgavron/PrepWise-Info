@@ -64,16 +64,12 @@ export default function Footer() {
           <a
             href={LEGAL_LINKS.privacy}
             className="hover:text-pw-text transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             Privacy Policy
           </a>
           <a
             href={LEGAL_LINKS.terms}
             className="hover:text-pw-text transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             Terms of Use
           </a>

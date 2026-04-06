@@ -31,26 +31,41 @@ VECTOR (Marketing agent) has read/write access to this repository for content ed
 
 ```
 PrepWise-Info/
-├── index.html       ← Landing page with links to legal docs
-├── privacy.html     ← Privacy Policy (effective 2026-03-09)
-├── terms.html       ← Terms of Use / EULA (effective 2026-03-09)
-├── 404.html         ← Custom 404 error page
-├── logo.svg         ← PrepWise logo
-├── _headers         ← Cloudflare Pages security headers
-├── robots.txt       ← Search engine directives
-├── sitemap.xml      ← Sitemap for SEO
-├── wrangler.toml    ← Cloudflare Pages project config
-└── CLAUDE.md        ← This file
+├── landing/                ← Next.js landing page application (deployed via wrangler.toml)
+│   ├── src/app/
+│   │   ├── layout.tsx      ← Root layout (metadata, fonts, dark theme)
+│   │   ├── page.tsx        ← Home page (hero, features, how-it-works, stats, email capture)
+│   │   ├── privacy/page.tsx ← Privacy Policy (integrated route)
+│   │   ├── terms/page.tsx  ← Terms of Use / EULA (integrated route)
+│   │   └── globals.css     ← Tailwind theme + brand colors
+│   ├── src/components/     ← Navbar, Hero, Features, HowItWorks, Stats, EmailCapture, Footer
+│   ├── src/lib/constants.ts ← Nav links, legal links, features, steps, stats
+│   └── public/
+│       ├── logo.svg        ← PrepWise production logo
+│       └── screenshots/    ← Hero section screenshots
+├── index.html              ← Legacy legal docs landing (legal.prepwise.app)
+├── privacy.html            ← Legacy Privacy Policy (standalone HTML)
+├── terms.html              ← Legacy Terms of Use (standalone HTML)
+├── 404.html                ← Custom 404 error page
+├── logo.svg                ← PrepWise logo (source asset)
+├── _headers                ← Cloudflare Pages security headers
+├── robots.txt              ← Search engine directives
+├── sitemap.xml             ← Sitemap for SEO
+├── wrangler.toml           ← Cloudflare Pages config (serves landing/out/)
+└── CLAUDE.md               ← This file
 ```
 
 ## URL Structure
 
-Cloudflare Pages serves clean URLs automatically:
-- `/` → index.html
-- `/privacy` → privacy.html
-- `/terms` → terms.html
+Landing app (Next.js static export via wrangler.toml → landing/out/):
+- `/` → Home (landing page)
+- `/privacy` → Privacy Policy (integrated into landing app)
+- `/terms` → Terms of Use (integrated into landing app)
 
-Target domain: `legal.prepwise.app`
+Legacy static HTML (legal.prepwise.app, kept for backward compatibility):
+- `index.html` → Legal docs index
+- `privacy.html` → Privacy Policy
+- `terms.html` → Terms of Use
 
 ## Design
 
@@ -114,11 +129,11 @@ Configured in `_headers`:
 3. Update `sitemap.xml` lastmod dates
 4. Commit and push — Cloudflare Pages auto-deploys on push to main
 
-## Next Phase — Full Website Conversion
+## Next Phase — Enhancements
 
-Future work to expand beyond legal docs:
-- Add marketing landing page (prepwise.app → this site or separate)
-- Add support/FAQ pages
-- Consider shared CSS file if more pages are added
-- Add favicon and Apple touch icons
+Future work:
+- Add support/FAQ pages as integrated routes
 - Add structured data (JSON-LD) for legal pages
+- Replace App Store badge placeholder with official Apple badge
+- Integrate real app screenshots into Hero phone mockups
+- Finalize social media URLs when accounts are created
