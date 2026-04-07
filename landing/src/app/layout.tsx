@@ -40,7 +40,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} dark`}>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" type="image/x-icon" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
       <body className="min-h-screen bg-pw-bg text-pw-text font-sans antialiased">
         {children}
