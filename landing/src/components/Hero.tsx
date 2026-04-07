@@ -63,10 +63,8 @@ export default function Hero() {
           <div className="relative z-10 -mr-8">
             <div className="w-[220px] sm:w-[260px] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 border border-pw-border-soft bg-pw-bg-card">
               {/* TODO: Replace with real app screenshot */}
-              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center">
-                <span className="text-pw-text-subtle text-sm font-medium">
-                  PrepWise
-                </span>
+              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center px-6">
+                <img src="/logo.svg" alt="PrepWise" className="w-3/4 opacity-80" />
               </div>
             </div>
           </div>
@@ -75,10 +73,8 @@ export default function Hero() {
           <div className="relative z-0 -ml-8 mt-12">
             <div className="w-[200px] sm:w-[240px] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 border border-pw-border-soft bg-pw-bg-card rotate-3">
               {/* TODO: Replace with real app screenshot */}
-              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand-alt/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center">
-                <span className="text-pw-text-subtle text-sm font-medium">
-                  PrepWise
-                </span>
+              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand-alt/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center px-6">
+                <img src="/logo.svg" alt="PrepWise" className="w-3/4 opacity-80" />
               </div>
             </div>
           </div>
