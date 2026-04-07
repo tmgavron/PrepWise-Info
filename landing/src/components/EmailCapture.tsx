@@ -37,7 +37,7 @@ export default function EmailCapture() {
           "Content-Type": "application/json",
           Authorization: `Token ${apiKey}`,
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email_address: email }),
       });
 
       if (res.ok) {
@@ -45,9 +45,14 @@ export default function EmailCapture() {
       } else {
         const data = await res.json().catch(() => null);
         setStatus("error");
-        setErrorMsg(
-          data?.email?.[0] || data?.detail || "Something went wrong. Please try again."
-        );
+        const detail = data?.detail;
+        const message =
+          typeof detail === "string"
+            ? detail
+            : Array.isArray(detail)
+              ? detail.map((d: { msg?: string }) => d.msg).join(", ")
+              : "Something went wrong. Please try again.";
+        setErrorMsg(message);
       }
     } catch {
       setStatus("error");
