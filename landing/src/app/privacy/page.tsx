@@ -114,7 +114,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-3">
                 To exercise any of these rights, contact us at{" "}
-                <a href="mailto:support@prepwise.app" className="text-pw-link hover:underline">support@prepwise.app</a>.
+                <a href="mailto:support@prepwise-app.com" className="text-pw-link hover:underline">support@prepwise-app.com</a>.
               </p>
             </section>
 
@@ -139,7 +139,7 @@ export default function PrivacyPage() {
               <h2 className="text-xl font-semibold text-pw-text mb-3">11. Contact Us</h2>
               <p>If you have questions or concerns about this Privacy Policy, please contact us:</p>
               <ul className="list-disc pl-5 mt-2">
-                <li>Email: <a href="mailto:support@prepwise.app" className="text-pw-link hover:underline">support@prepwise.app</a></li>
+                <li>Email: <a href="mailto:support@prepwise-app.com" className="text-pw-link hover:underline">support@prepwise-app.com</a></li>
               </ul>
             </section>
           </div>

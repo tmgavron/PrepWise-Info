@@ -212,7 +212,7 @@ export default function TermsPage() {
               <h2 className="text-xl font-semibold text-pw-text mb-3">17. Contact Us</h2>
               <p>If you have questions about these Terms, please contact us:</p>
               <ul className="list-disc pl-5 mt-2">
-                <li>Email: <a href="mailto:support@prepwise.app" className="text-pw-link hover:underline">support@prepwise.app</a></li>
+                <li>Email: <a href="mailto:support@prepwise-app.com" className="text-pw-link hover:underline">support@prepwise-app.com</a></li>
               </ul>
             </section>
           </div>

@@ -20,8 +20,7 @@ export const SOCIAL_LINKS = {
   twitter: "https://x.com/prepwise",
 } as const;
 
-// TODO: Replace with real support email
-export const SUPPORT_EMAIL = "mailto:support@prepwise.app";
+export const SUPPORT_EMAIL = "mailto:support@prepwise-app.com";
 
 export const FEATURES = [
   {
