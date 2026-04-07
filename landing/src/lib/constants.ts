@@ -13,11 +13,10 @@ export const LEGAL_LINKS = {
   terms: "/terms",
 } as const;
 
-// TODO: Replace with real social URLs
 export const SOCIAL_LINKS = {
-  instagram: "https://instagram.com/prepwise.app",
-  tiktok: "https://tiktok.com/@prepwise",
-  twitter: "https://x.com/prepwise",
+  instagram: "https://www.instagram.com/prepwiseapp/",
+  tiktok: "https://www.tiktok.com/@prepwiseapp",
+  twitter: "https://x.com/PrepWiseApp",
 } as const;
 
 export const SUPPORT_EMAIL = "mailto:support@prepwise-app.com";
