@@ -70,15 +70,15 @@ export const STEPS = [
 ] as const;
 
 export const SHOWCASE_SLIDES = [
-  { src: "/promo/C10.png", caption: "Get started in 60 seconds" },
-  { src: "/promo/C4.png", caption: "Every ingredient, always on hand" },
   { src: "/promo/C1.png", caption: "Plan meals around what you actually have" },
   { src: "/promo/C2.png", caption: "AI-powered recipe creation" },
-  { src: "/promo/C5.png", caption: "Your recipe collection, beautifully organized" },
-  { src: "/promo/C7.png", caption: "From fridge to plated, effortlessly" },
   { src: "/promo/C3.png", caption: "Smart shopping lists, zero guesswork" },
+  { src: "/promo/C4.png", caption: "Every ingredient, always on hand" },
+  { src: "/promo/C5.png", caption: "Your recipe collection, beautifully organized" },
   { src: "/promo/C6.png", caption: "Track macros, without the hassle" },
+  { src: "/promo/C7.png", caption: "From fridge to plated, effortlessly" },
   { src: "/promo/C9.png", caption: "Designed for night owls — full dark mode" },
+  { src: "/promo/C10.png", caption: "Get started in 60 seconds" },
 ] as const;
 
 export const STATS = [
