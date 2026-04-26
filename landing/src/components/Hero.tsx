@@ -59,23 +59,25 @@ export default function Hero() {
           {/* Glow behind phones */}
           <div className="absolute w-[350px] h-[350px] rounded-full bg-pw-brand/15 blur-[80px]" />
 
-          {/* Phone 1 */}
+          {/* Phone 1 — Home dashboard */}
           <div className="relative z-10 -mr-8">
             <div className="w-[220px] sm:w-[260px] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 border border-pw-border-soft bg-pw-bg-card">
-              {/* TODO: Replace with real app screenshot */}
-              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center px-6">
-                <img src="/logo.svg" alt="PrepWise" className="w-3/4 opacity-80" />
-              </div>
+              <img
+                src="/screenshots/hero-1.png"
+                alt="PrepWise home dashboard with weekly meals, expiring ingredients, and macro tracking"
+                className="block w-full h-auto"
+              />
             </div>
           </div>
 
-          {/* Phone 2 */}
+          {/* Phone 2 — Recipes */}
           <div className="relative z-0 -ml-8 mt-12">
             <div className="w-[200px] sm:w-[240px] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 border border-pw-border-soft bg-pw-bg-card rotate-3">
-              {/* TODO: Replace with real app screenshot */}
-              <div className="aspect-[9/19.5] bg-gradient-to-b from-pw-brand-alt/20 via-pw-bg-card to-pw-bg-card-alt flex items-center justify-center px-6">
-                <img src="/logo.svg" alt="PrepWise" className="w-3/4 opacity-80" />
-              </div>
+              <img
+                src="/screenshots/hero-2.png"
+                alt="PrepWise recipe library with featured and liked recipes"
+                className="block w-full h-auto"
+              />
             </div>
           </div>
         </motion.div>
