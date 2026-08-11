@@ -1073,6 +1073,7 @@ function selfTest() {
 
   const APP_LINK = (ct) =>
     `<a href="https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&amp;ct=${ct}&amp;mt=8">Download</a>`;
+  const SITEWIDE_DEFAULT_CT = "Landing%20Page%20Download%20Button";
 
   // --- the fixture that MUST pass
   check("a compliant page produces no errors", () => {
@@ -1471,7 +1472,7 @@ function selfTest() {
     withTempPages((root) => {
       writeUseCase(root, "a-page.ts", "a-page", "lp_a_page");
       writePagesIndex(root, ["a-page"]);
-      writeBuilt(root, "a-page", "Landing%20Page%20Download%20Button");
+      writeBuilt(root, "a-page", SITEWIDE_DEFAULT_CT);
       assert(ucCodes(root).includes("usecase-ct-not-rendered"), "expected usecase-ct-not-rendered");
     });
   });
@@ -1491,8 +1492,8 @@ function selfTest() {
           JSON.stringify({
             "@graph": [{
               "@type": "MobileApplication",
-              installUrl: "https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=Landing%20Page%20Download%20Button&mt=8",
-              downloadUrl: "https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=Landing%20Page%20Download%20Button&mt=8",
+              installUrl: `https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=${SITEWIDE_DEFAULT_CT}&mt=8`,
+              downloadUrl: `https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=${SITEWIDE_DEFAULT_CT}&mt=8`,
             }],
           }) +
           "</script></body></html>"
@@ -1543,7 +1544,7 @@ function selfTest() {
     const mixed = goodPage({
       body: APP_LINK("faq") +
         '<script type="application/ld+json">{"downloadUrl":' +
-        '"https://apps.apple.com/app/apple-store/id6754949361?ct=Landing%20Page%20Download%20Button"}</script>',
+        `"https://apps.apple.com/app/apple-store/id6754949361?ct=${SITEWIDE_DEFAULT_CT}"}</script>`,
     });
     assert(codes(mixed, "faq").includes("appstore-ct-inconsistent"),
       `expected appstore-ct-inconsistent, got ${JSON.stringify(codes(mixed, "faq"))}`);
@@ -1561,7 +1562,7 @@ function selfTest() {
         path.join(root, "out", "blog", "a-post.html"),
         "<html><body>" + APP_LINK("blog-a-post") +
           '<script type="application/ld+json">{"installUrl":' +
-          '"https://apps.apple.com/app/apple-store/id6754949361?ct=Landing%20Page%20Download%20Button"}</script>' +
+          `"https://apps.apple.com/app/apple-store/id6754949361?ct=${SITEWIDE_DEFAULT_CT}"}</script>` +
           "</body></html>"
       );
       assert(registryCodes(root).includes("blog-ct-mismatch"), "expected blog-ct-mismatch");
