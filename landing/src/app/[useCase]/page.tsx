@@ -8,10 +8,11 @@ import AppStoreCta from "@/components/AppStoreCta";
 import HeroCta from "@/components/usecase/HeroCta";
 import Paragraph from "@/components/RichText";
 import { getAllUseCases, getUseCaseBySlug } from "@/lib/usecase";
+import JsonLd from "@/components/JsonLd";
 import {
   breadcrumbList,
-  graph,
   jsonLdForUseCase,
+  siteGraph,
   type Crumb,
 } from "@/lib/schema";
 import { OG_IMAGE } from "@/lib/constants";
@@ -75,20 +76,18 @@ export default async function UseCasePage({
     { name: page.navLabel, path: `/${page.slug}` },
   ];
 
-  // WebPage + BreadcrumbList. The app itself is referenced by @id from the
-  // sitewide graph in layout.tsx rather than redeclared here, and there is no
-  // FAQPage node: /faq owns the site's single one and this page links to it.
-  const jsonLd = graph([jsonLdForUseCase(page), breadcrumbList(crumbs)]);
+  // The sitewide nodes + WebPage + BreadcrumbList, in one graph. `page.ct` is
+  // passed so the app node's installUrl/downloadUrl carry the SAME token as the
+  // three rendered Download links; before 2026-07-27 they advertised the
+  // sitewide default and this page's schema contradicted its own anchors. There
+  // is no FAQPage node: /faq owns the site's single one and this page links to it.
+  const jsonLd = siteGraph(page.ct, [jsonLdForUseCase(page), breadcrumbList(crumbs)]);
 
   const siblings = getAllUseCases().filter((other) => other.slug !== page.slug);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // Serialized from content we control - no user input reaches it.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <Navbar pageCt={page.ct} />
       <main className="relative pt-28 pb-24 px-6">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

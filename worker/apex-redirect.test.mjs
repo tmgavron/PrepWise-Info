@@ -1,6 +1,11 @@
-// Regression tests for the apex -> www redirect in worker/index.js.
+// Regression tests for the routing decisions in worker/index.js: the apex -> www
+// redirect, and the Google Search Console verification file.
 //
 // Run: node worker/apex-redirect.test.mjs
+//
+// (The filename still says apex-redirect because .github/workflows/deploy.yml
+// runs this exact path. Adding a second file would mean a second thing to
+// remember to wire in, and a test nobody runs is worse than no test.)
 //
 // This exists because the redirect sits in front of TWO things that fail
 // SILENTLY and are only noticed by users:
@@ -16,17 +21,26 @@
 // app, on other people's phones. Hence a test rather than a careful reading.
 
 import assert from "node:assert/strict";
-import { apexRedirect } from "./index.js";
+import { apexRedirect, googleVerificationResponse, GOOGLE_VERIFICATION_FILES } from "./index.js";
 
 let passed = 0;
 const failures = [];
+// An async check that is not awaited fails as an unhandled rejection AFTER the
+// report has already printed "ok". Pending promises are collected here and
+// settled before anything is reported, so an async case cannot pass vacuously.
+const pending = [];
 
 function check(name, fn) {
+  const record = (err) => failures.push(`${name}: ${err.message}`);
   try {
-    fn();
+    const result = fn();
+    if (result && typeof result.then === "function") {
+      pending.push(result.then(() => { passed += 1; }, record));
+      return;
+    }
     passed += 1;
   } catch (err) {
-    failures.push(`${name}: ${err.message}`);
+    record(err);
   }
 }
 
@@ -135,7 +149,74 @@ for (const host of [
   });
 }
 
+// --- Google Search Console verification file --------------------------------
+//
+// The whole point of serving this from the worker is that GSC does not follow
+// redirects and Cloudflare's asset binding 307s `/x.html` -> `/x`. So the two
+// properties that matter are: the response is a direct 200 with the exact body,
+// and it happens BEFORE the apex redirect can touch it.
+
+const TOKEN = "google1234567890abcdef.html";
+
+/** Response for a path, using an explicit token list. null => falls through. */
+function verificationFor(href, files = [TOKEN]) {
+  return googleVerificationResponse(new URL(href), files);
+}
+
+check("a configured token is served as a direct 200 with the exact body", async () => {
+  for (const host of ["www.prepwise-app.com", "prepwise-app.com"]) {
+    const res = verificationFor(`https://${host}/${TOKEN}`);
+    assert.ok(res, `no response on ${host}`);
+    assert.equal(res.status, 200, `status on ${host}`);
+    assert.equal(await res.text(), `google-site-verification: ${TOKEN}`, `body on ${host}`);
+  }
+});
+
+// The apex redirect is what would break verification if the handler ran after
+// it. Assert the ordering property directly rather than trusting the read.
+check("the token is exempt from the apex redirect", () => {
+  const url = new URL(`https://prepwise-app.com/${TOKEN}`);
+  assert.ok(verificationFor(url.href), "verification must answer first");
+  assert.ok(apexRedirect(url), "sanity: the apex redirect would otherwise fire here");
+});
+
+check("an unconfigured token falls through (no blanket google*.html handler)", () => {
+  assert.equal(verificationFor("https://www.prepwise-app.com/googledeadbeefdead.html"), null);
+});
+
+// A non-verification filename in the array must never shadow a real page. This
+// is why the shape guard exists at all - membership alone would let one typo
+// take a live route off the site.
+for (const bad of ["privacy.html", "index.html", "faq.html", "og-image.png"]) {
+  check(`${bad} cannot be served as a verification file`, () => {
+    assert.equal(verificationFor(`https://www.prepwise-app.com/${bad}`, [bad]), null);
+  });
+}
+
+for (const path of [
+  "/blog/googleabc123456.html", // only the site root, not a nested path
+  "/google.html",               // no token at all
+  "/googleabc.html",            // too short to be a real token
+  "/GOOGLE1234567890abcdef.html", // GSC filenames are lowercase
+]) {
+  check(`${path} is not treated as a verification file`, () => {
+    assert.equal(verificationFor(`https://www.prepwise-app.com${path}`, [path.slice(1)]), null);
+  });
+}
+
+// The shipped default. An accidentally-committed token would serve a stranger's
+// verification string from our domain, which is a real (if unlikely) way to hand
+// someone else Search Console access to the site.
+check("every shipped entry is a well-formed verification filename", () => {
+  assert.ok(Array.isArray(GOOGLE_VERIFICATION_FILES), "must be an array");
+  for (const name of GOOGLE_VERIFICATION_FILES) {
+    assert.match(name, /^google[a-z0-9]{6,}\.html$/, `bad entry: ${name}`);
+  }
+});
+
 // --- report -----------------------------------------------------------------
+
+await Promise.all(pending);
 
 if (failures.length) {
   console.error(`FAIL ${failures.length} of ${passed + failures.length}`);

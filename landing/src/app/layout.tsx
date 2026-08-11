@@ -2,20 +2,18 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Analytics from "@/components/Analytics";
-import { APP_STORE_URL, OG_IMAGE, SITE_URL, SOCIAL_LINKS } from "@/lib/constants";
+import {
+  OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/constants";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
-
-// Title 50-60 chars, meta description 150-160, both measured DECODED (an "&"
-// is one character to Google, five in the HTML source). Enforced by
-// landing/scripts/verify-seo.mjs; rationale in landing/seo/on-page-checklist.md.
-const SITE_TITLE = "PrepWise: AI Meal Planner & Pantry Tracker for iPhone";
-const SITE_DESCRIPTION =
-  "Stop guessing what to cook. PrepWise plans your meals from the food already in your pantry, tracks macros, and writes the shopping list. Free on iPhone.";
 
 export const metadata: Metadata = {
   // Resolves every relative canonical / OG url below against the WWW host.
@@ -54,54 +52,19 @@ export const metadata: Metadata = {
   },
 };
 
-// Sitewide structured data. Organization + WebSite identify the brand and the
-// site; SoftwareApplication describes the product itself.
+// NO JSON-LD HERE, deliberately.
 //
-// NOTE: no `aggregateRating` here on purpose. Google requires review markup to
-// reflect ratings actually shown on the page, and inventing one is a manual
-// -action risk - not a shortcut worth taking.
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: "PrepWise",
-      legalName: "PrepWise LLC",
-      url: `${SITE_URL}/`,
-      logo: `${SITE_URL}/logo.svg`,
-      sameAs: [SOCIAL_LINKS.instagram, SOCIAL_LINKS.tiktok, SOCIAL_LINKS.twitter],
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      name: "PrepWise",
-      url: `${SITE_URL}/`,
-      description: SITE_DESCRIPTION,
-      inLanguage: "en-US",
-      publisher: { "@id": `${SITE_URL}/#organization` },
-    },
-    {
-      "@type": "MobileApplication",
-      "@id": `${SITE_URL}/#app`,
-      name: "PrepWise",
-      description: SITE_DESCRIPTION,
-      applicationCategory: "LifestyleApplication",
-      operatingSystem: "iOS",
-      url: `${SITE_URL}/`,
-      installUrl: APP_STORE_URL,
-      downloadUrl: APP_STORE_URL,
-      screenshot: `${SITE_URL}/og-image.png`,
-      publisher: { "@id": `${SITE_URL}/#organization` },
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-      },
-    },
-  ],
-};
+// The sitewide graph (Organization + WebSite + MobileApplication) used to be
+// built and emitted right here. It moved to lib/schema.ts -> siteGraph(), which
+// every PAGE calls, because the app node's installUrl/downloadUrl have to carry
+// that page's App Store campaign token and a root layout cannot know which page
+// is rendering: it has no dynamic segment, so it receives no params. A node
+// built here can only ever advertise the sitewide default, which is exactly how
+// four use-case pages ended up rendering `ct=lp_*` anchors beside a JSON-LD
+// download link claiming the generic token.
+//
+// A page that forgets to call siteGraph() ships without Organization/WebSite,
+// which scripts/verify-seo.mjs fails the build on.
 
 export default function RootLayout({
   children,
@@ -111,11 +74,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} dark`}>
       <body className="min-h-screen bg-pw-bg text-pw-text font-sans antialiased">
-        <script
-          type="application/ld+json"
-          // Serialized from a literal we control - no user input reaches it.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         {children}
         <Analytics />
       </body>

@@ -6,7 +6,8 @@ import FaqList from "@/components/FaqList";
 import AppStoreCta from "@/components/AppStoreCta";
 import { FAQ_ITEMS } from "@content/faq";
 import { faqByTopic, faqPageJsonLd } from "@/lib/faq";
-import { breadcrumbList, graph, type Crumb } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList, siteGraph, type Crumb } from "@/lib/schema";
 import { OG_IMAGE, SITE_URL, SUPPORT_EMAIL } from "@/lib/constants";
 
 // Primary keyword: "meal planning app faq" (claimed in
@@ -17,6 +18,12 @@ const DESCRIPTION =
   "Answers to what people ask before downloading PrepWise: how the pantry works, what it plans, which macros it counts, what it costs, and who it is not for.";
 
 const PAGE_URL = `${SITE_URL}/faq`;
+
+// ONE token for the whole page. Every App Store link on /faq carries it — the
+// navbar button, the footer CTA, and the JSON-LD installUrl/downloadUrl — so an
+// install sourced from any of them joins back to this page in App Store
+// Connect. verify-seo.mjs fails the build if they ever disagree.
+const PAGE_CT = "faq";
 
 const CRUMBS: Crumb[] = [
   { name: "Home", path: "/" },
@@ -49,23 +56,19 @@ export const metadata: Metadata = {
 // The site's ONE FAQPage node. The home page shows a few of these questions
 // with no schema and a link back here: duplicating FAQPage across surfaces is
 // what makes Google pick one and ignore the other.
-const jsonLd = graph([faqPageJsonLd(FAQ_ITEMS, PAGE_URL), breadcrumbList(CRUMBS)]);
+const jsonLd = siteGraph(PAGE_CT, [faqPageJsonLd(FAQ_ITEMS, PAGE_URL), breadcrumbList(CRUMBS)]);
 
 export default function FaqPage() {
   const groups = faqByTopic(FAQ_ITEMS);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        // Serialized from content we control - no user input reaches it.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       {/* The navbar Download button is the FIRST App Store link on the page, so
           it needs the page token too. Without it, an install from the top of
           /faq reports under the sitewide default while one from the bottom of
           the same page reports as "faq". */}
-      <Navbar pageCt="faq" />
+      <Navbar pageCt={PAGE_CT} />
       <main className="relative pt-28 pb-24 px-6">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-pw-brand/8 blur-[120px]" />
@@ -123,7 +126,7 @@ export default function FaqPage() {
 
           <div className="mt-16">
             <AppStoreCta
-              pageCt="faq"
+              pageCt={PAGE_CT}
               placement="faq_footer"
               heading="Plan tonight from what is already in your kitchen"
               body="PrepWise tracks your pantry, shows you which recipes you can cook right now, and writes the shopping list for the gap."

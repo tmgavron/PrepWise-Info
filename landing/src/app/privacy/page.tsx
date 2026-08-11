@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LegalLayout from "@/components/LegalLayout";
+import JsonLd from "@/components/JsonLd";
+import { siteGraph } from "@/lib/schema";
 import { OG_IMAGE } from "@/lib/constants";
 
 const TITLE = "Privacy Policy | How PrepWise Collects and Protects Data";
@@ -33,9 +35,16 @@ export const metadata: Metadata = {
   },
 };
 
+// A legal page has no campaign of its own: its only App Store link is the
+// navbar's, which renders the sitewide default token. The sitewide nodes are
+// emitted here rather than by the root layout, so this page keeps the
+// Organization + WebSite that verify-seo.mjs requires on every page.
+const jsonLd = siteGraph(undefined);
+
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd data={jsonLd} />
       <Navbar />
       <LegalLayout
         title="Privacy Policy"

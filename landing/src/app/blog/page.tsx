@@ -3,7 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getAllPosts, formatDate } from "@/lib/blog";
-import { breadcrumbList, graph, type Crumb } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList, siteGraph, type Crumb } from "@/lib/schema";
 import { OG_IMAGE } from "@/lib/constants";
 
 // Title 50-60 and description 150-160 characters, measured decoded.
@@ -36,17 +37,16 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = graph([breadcrumbList(CRUMBS)]);
+// The index has no campaign token of its own: its Download button is the
+// navbar's, which renders the sitewide default. The POSTS carry blog-<slug>.
+const jsonLd = siteGraph(undefined, [breadcrumbList(CRUMBS)]);
 
 export default function BlogIndexPage() {
   const posts = getAllPosts();
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <Navbar />
       <main className="relative pt-28 pb-24 px-6">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

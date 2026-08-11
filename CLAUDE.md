@@ -153,6 +153,33 @@ redirect branch.
 The redirect preserves the query string because the ad attribution chain depends
 on it (`utm_content` → App Store `ct` token; see `landing/src/lib/analytics.ts`).
 
+### Every `.html` asset 307s to its extensionless path
+
+Cloudflare's asset binding serves `/privacy.html` as a **307 to `/privacy`**.
+Verified live 2026-07-26 on `/privacy.html`, `/terms.html`, `/faq.html`,
+`/blog.html` and `/404.html`. Nothing configures this; it is the default
+`html_handling` mode, and it is what makes the clean URLs work.
+
+It also means **a file that must be fetched at an exact `.html` URL cannot be
+shipped as a static asset**. The case that bites is Google Search Console's
+HTML-file verification: GSC does not follow redirects, so the token deploys
+green, sits visibly in the repo, and the property never verifies. `html_handling
+= "none"` is not the fix either, since it would 404 every clean URL on the site.
+
+Such a file is served from `worker/index.js` instead, which answers before both
+the apex redirect and the assets. Today that is
+`GOOGLE_VERIFICATION_FILES` (empty until Trent creates the property). It is
+placed ahead of the apex redirect on purpose, so the file resolves on the apex
+AND on www with no redirect and satisfies whichever property type gets created.
+
+Two guards, because the failure is invisible from the deploy output:
+`verify-seo.mjs` fails the build on a `google*.html` in the export
+(`gsc-verification-asset`), and `verify-live-routing.sh` asserts any configured
+token answers 200, unredirected, on both hosts with the exact body. With no
+token configured it prints `skip`, not `ok`.
+
+Setup walkthrough: [`landing/seo/search-console-setup.md`](landing/seo/search-console-setup.md).
+
 ### The wrangler version pin is load-bearing
 
 `.github/workflows/deploy.yml` pins `wranglerVersion: "4.114.0"`. **Do not remove
@@ -234,6 +261,21 @@ value is a gap to write around, not a suggestion.
 The banned-claim list in `voice.md` is the same list enforced in code for
 PrepWise ads and scripts (`~/command-system/content-lab/lib/brand-guardrail.js`),
 so search, social, and paid all say the same thing.
+
+### 1b. `landing/seo/search-console-setup.md` — the measurement side
+
+How the site gets verified in Google Search Console and Bing, what is already
+wired, and why the HTML-file verification method needs the worker rather than
+`landing/public/`. Read it before touching anything to do with site
+verification.
+
+**Verified 2026-07-27** as a **Domain** property, by DNS TXT on the apex. That
+record is the ownership proof and it exists **only in Cloudflare DNS** — there
+is no copy in this repo, Google re-checks it periodically, and deleting it
+un-verifies the property and stops the search-data feed silently. The token is
+written down in that doc so it can be restored, and
+`scripts/verify-live-routing.sh` asserts on every deploy both that it is still
+present and that the SPF record sharing that TXT set survived.
 
 ### 2. `landing/seo/on-page-checklist.md` — the checklist
 

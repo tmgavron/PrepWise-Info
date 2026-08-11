@@ -164,6 +164,64 @@ function renderGonePage() {
   });
 }
 
+// --- Google Search Console verification -------------------------------------
+//
+// GSC's HTML-FILE method fetches https://<host>/google<token>.html and expects a
+// 200 whose body is exactly `google-site-verification: google<token>.html`. It
+// does NOT follow redirects; a redirect is reported as a verification failure.
+//
+// DROPPING THE FILE INTO landing/public/ DOES NOT WORK HERE, and it fails in a
+// way that reads like the file is simply missing. Cloudflare's asset binding
+// runs html_handling in its default mode, which redirects `/anything.html` to
+// the extensionless `/anything`. Verified live 2026-07-26:
+//
+//   curl -sI https://www.prepwise-app.com/404.html   ->  307 -> /404
+//
+// So the token is served HERE instead, ahead of both the apex redirect and the
+// assets. landing/scripts/verify-seo.mjs fails the build if a google*.html file
+// shows up in the static export, so the path that does not work cannot ship.
+//
+// Serving it BEFORE the apex redirect is deliberate: the file then resolves on
+// the apex AND on www with no redirect, so it satisfies a Domain property, a www
+// URL-prefix property, or an apex URL-prefix property equally. Whichever one
+// Trent creates in the console, this works.
+//
+// TO ADD A TOKEN: paste the filename GSC shows you (e.g.
+// 'google1234567890abcdef.html') into the array below, commit, push. The deploy
+// is automatic; then press Verify in the console. Leave old entries in place -
+// GSC re-checks verification periodically and removing the file un-verifies the
+// property, which silently stops the data the SEO feedback loop runs on.
+//
+// Full walkthrough: landing/seo/search-console-setup.md
+export const GOOGLE_VERIFICATION_FILES = [];
+
+// Shape guard, kept in lockstep with GSC_ASSET in landing/scripts/verify-seo.mjs.
+// Membership in the array above is the real gate; this exists so an entry that
+// is not a verification filename (say 'privacy.html') can never shadow a real
+// page of the site.
+const GOOGLE_VERIFICATION_RE = /^google[a-z0-9]{6,}\.html$/;
+
+/**
+ * Serve a configured Google Search Console verification file, or null to fall
+ * through to normal handling.
+ *
+ * The body is derived from the filename because that IS the file's content -
+ * GSC generates `google-site-verification: <filename>` and checks for exactly
+ * that string. Deriving it means the two can never drift apart.
+ */
+export function googleVerificationResponse(url, files = GOOGLE_VERIFICATION_FILES) {
+  const name = url.pathname.slice(1);
+  if (!GOOGLE_VERIFICATION_RE.test(name)) return null;
+  if (!files.includes(name)) return null;
+  return new Response(`google-site-verification: ${name}`, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, max-age=300',
+    },
+  });
+}
+
 // Canonical host. The apex 301s here so one hostname carries the ranking
 // signal; keep in lockstep with SITE_URL in landing/src/lib/constants.ts.
 const CANONICAL_HOST = 'www.prepwise-app.com';
@@ -204,6 +262,12 @@ export function apexRedirect(url) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Before the apex redirect on purpose: GSC does not follow redirects, and
+    // this way the token verifies on whichever host the property was created
+    // for. See GOOGLE_VERIFICATION_FILES above.
+    const verification = googleVerificationResponse(url);
+    if (verification) return verification;
 
     const redirect = apexRedirect(url);
     if (redirect) return redirect;

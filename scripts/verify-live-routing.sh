@@ -22,6 +22,10 @@ set -uo pipefail
 APEX="https://prepwise-app.com"
 WWW="https://www.prepwise-app.com"
 
+# Resolved from this script's own location so it runs from any cwd (CI invokes
+# it from the repo root, a human may not).
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+
 # Cloudflare finishes propagating a deploy across colos a little after wrangler
 # returns, so a check run seconds later can still meet a stale asset on one
 # edge. Observed 2026-07-26: 26s after deploy, apex /privacy still answered 200
@@ -42,6 +46,9 @@ checks=0
 CB=""
 
 pass() { checks=$((checks + 1)); printf '  ok    %s\n' "$1"; }
+# Deliberately does NOT count as a check: a skipped assertion proves nothing and
+# must not inflate the "all N checks passed" line at the end.
+skip() { printf '  skip  %s\n' "$1"; }
 fail() {
   checks=$((checks + 1))
   failures=$((failures + 1))
@@ -135,6 +142,87 @@ run_all_checks() {
     pass "AASA identical on apex and www"
   else
     fail "AASA identical on apex and www" "apex and www AASA differ"
+  fi
+
+  echo "== apex TXT set (Search Console ownership + email auth) =="
+  # The Domain property was verified by DNS on 2026-07-27, so the ownership
+  # proof lives ONLY in Cloudflare DNS - there is no artefact in this repo that
+  # proves it and nothing else watches it. Google re-checks periodically and
+  # silently un-verifies the property if the record disappears, which stops the
+  # entire search-data feed with no error anywhere.
+  #
+  # Queried over DoH rather than `dig` so this needs no dnsutils in CI, and
+  # answered by Google's own resolver - the closest available proxy for what
+  # Google's verifier actually sees.
+  txt_json=$(curl -sS -m 20 -H 'accept: application/dns-json' \
+    'https://dns.google/resolve?name=prepwise-app.com&type=TXT' 2>/dev/null)
+  txt_records=$(printf '%s' "$txt_json" | node -e '
+    let s = "";
+    process.stdin.on("data", d => (s += d)).on("end", () => {
+      try {
+        const j = JSON.parse(s);
+        if (j.Status !== 0) process.exit(3);
+        console.log((j.Answer || [])
+          .filter(a => a.type === 16)
+          .map(a => a.data.replace(/^"|"$/g, ""))
+          .join("\n"));
+      } catch { process.exit(3); }
+    });' 2>/dev/null)
+  doh_rc=$?
+  if [ "$doh_rc" -ne 0 ]; then
+    # Cannot tell, so assert nothing. A third-party resolver blip must not fail
+    # a deploy - a flaky guardrail trains everyone to ignore it.
+    skip "apex TXT set unreadable (DoH query failed) - GSC token and SPF not checked"
+  else
+    # Matches ANY google-site-verification value rather than a pinned token:
+    # re-verifying under a different Google account legitimately rotates it, and
+    # a pinned copy here would be a second source of truth that fails spuriously.
+    # The failure actually being guarded is the record being DELETED. The value
+    # is echoed so a rotation is still visible in the CI log.
+    if printf '%s\n' "$txt_records" | grep -q '^google-site-verification='; then
+      found=$(printf '%s\n' "$txt_records" | grep '^google-site-verification=' | head -1)
+      pass "apex carries a Search Console verification TXT (${found:0:52}...)"
+    else
+      fail "apex carries a Search Console verification TXT" \
+        "no google-site-verification TXT on prepwise-app.com - the Domain property will un-verify and the search-data feed stops silently. Re-add it; see landing/seo/search-console-setup.md"
+    fi
+    # Same record SET as the token above, which is why this is asserted here: the
+    # apex TXT set carries both, and the way people break SPF is by REPLACING a
+    # TXT record while managing the verification one instead of adding alongside.
+    if printf '%s\n' "$txt_records" | grep -q '^v=spf1'; then
+      pass "apex SPF record intact"
+    else
+      fail "apex SPF record intact" \
+        "no v=spf1 TXT on prepwise-app.com - email deliverability for the domain breaks. A TXT record was probably replaced instead of added alongside."
+    fi
+  fi
+
+  echo "== Google Search Console verification files =="
+  # Read the configured tokens out of the worker rather than restating them here:
+  # a second list is a second place to forget. Node is already a build
+  # dependency, and worker/index.js has no side effects at module scope.
+  gsc_tokens=$(node -e \
+    "import('$REPO_ROOT/worker/index.js').then(m=>console.log(m.GOOGLE_VERIFICATION_FILES.join(' ')))" \
+    2>/dev/null)
+  if [ -z "$gsc_tokens" ]; then
+    # NOT a pass. Nothing was checked, and printing "ok" for that is how a
+    # guardrail turns into decoration.
+    skip "no GSC token configured yet (GOOGLE_VERIFICATION_FILES in worker/index.js is empty)"
+  else
+    for token in $gsc_tokens; do
+      # GSC does not follow redirects, and Cloudflare's asset binding 307s
+      # /x.html -> /x. If either host redirects, the property silently fails to
+      # verify and the SEO feedback loop has no data source.
+      expect_no_redirect "www /$token served directly" "$WWW/$token"
+      expect_no_redirect "apex /$token served directly" "$APEX/$token"
+      expect_200 "www /$token" "$WWW/$token"
+      body=$(curl -sS -m 20 "$WWW/$token" 2>/dev/null)
+      if [ "$body" = "google-site-verification: $token" ]; then
+        pass "$token body is the exact verification string"
+      else
+        fail "$token body is the exact verification string" "got: ${body:0:80}"
+      fi
+    done
   fi
 
   echo "== generated SEO files point at www only =="

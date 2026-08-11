@@ -68,12 +68,24 @@ which owns the general "plan my meals" query (registered in
 - [ ] **[GATE] A page-level App Store campaign token**, declared as `ct` on the
       page object. Shape `lp_<slug-ish>`, lowercase `[a-z0-9_]`, no doubled or
       trailing underscore, **40 characters maximum**.
-- [ ] **[GATE] The token actually reaches the rendered App Store href.** This is
-      the check that matters: `sanitizeCt()` truncates silently and a page wired
-      without its token still renders a working link, so the only symptom of
-      getting it wrong is an App Store row crediting the wrong page months
+- [ ] **[GATE] The token actually reaches the rendered App Store href**
+      (`usecase-ct-not-rendered`). `sanitizeCt()` truncates silently and a page
+      wired without its token still renders a working link, so the only symptom
+      of getting it wrong is an App Store row crediting the wrong page months
       later. `src/lib/usecase.ts` asserts the token's SHAPE at build time;
       `verify-seo.mjs` asserts it reached the ARTEFACT.
+- [ ] **[GATE] EVERY App Store URL on the page carries it, JSON-LD included**
+      (`usecase-ct-mismatch`, and `appstore-ct-inconsistent` sitewide). The rule
+      above is a PRESENCE check, and presence is satisfied by one correct
+      anchor — it cannot see a SECOND App Store URL on the same page carrying a
+      different token. That is exactly what shipped on 2026-07-27: four
+      use-case pages and `/faq` rendered correct `ct=lp_*` anchors beside a
+      JSON-LD `installUrl`/`downloadUrl` advertising the sitewide default,
+      because the app node was built once in the root layout, which has no
+      dynamic segment and therefore cannot know which page is rendering. Both
+      links work, nothing errors, and an install a search engine sources from
+      the schema lands in the generic bucket. Build the graph with
+      `siteGraph(pageCt, …)` from `src/lib/schema.ts` and the two cannot drift.
 - [ ] **[GATE] No two pages share a token** (`usecase-ct-duplicate`). Their
       installs would merge into one App Store row and neither number would be
       real.
@@ -182,6 +194,14 @@ Store click.
       the `ct` attribution token survives. A hand-written App Store URL breaks
       install attribution silently. See the UTM playbook in
       `~/command-system/marketing/UTM-PLAYBOOK.md`.
+- [ ] **[GATE] ONE PAGE, ONE CAMPAIGN TOKEN** (`appstore-ct-inconsistent`).
+      `ct` is the join key into App Store Connect, so a page emitting two of
+      them splits its own installs across two rows. The gate enumerates every
+      `apps.apple.com` URL in the built HTML — anchors AND the JSON-LD
+      `installUrl`/`downloadUrl`, which is a real download link a crawler will
+      offer — and fails the build if they do not all agree. Applies to pages
+      that legitimately use the default token (`/`, `/blog`, the legal pages)
+      as well as the ones with a token of their own.
 - [ ] **State the platform: iPhone / iOS only.** Never "available on mobile".
 - [ ] **State the price honestly:** free to download; Pro is $6.99/month or
       $39.99/year with a 7-day trial. Free-tier limits (15 recipes, 20 AI
@@ -255,11 +275,15 @@ Store click.
 
 - [ ] **[GATE] All JSON-LD on the page parses.** A syntax error means Google
       sees no schema at all, and nothing else reports it.
-- [ ] **[GATE] `Organization` and `WebSite`** site-wide (already in
-      `src/app/layout.tsx`).
+- [ ] **[GATE] `Organization` and `WebSite`** site-wide. They come from
+      `siteGraph()` in `src/lib/schema.ts`, which EVERY page calls — NOT from
+      `src/app/layout.tsx`, which deliberately emits no JSON-LD at all. A page
+      that forgets to call it fails the build on `schema-missing`.
 - [ ] **[GATE] `MobileApplication` (or `SoftwareApplication`) on the home page**,
       with `applicationCategory`, `operatingSystem`, `offers`, `installUrl`.
-      This replaces the original checklist's `LocalBusiness` item.
+      This replaces the original checklist's `LocalBusiness` item. Its
+      `installUrl`/`downloadUrl` carry the PAGE's campaign token — see
+      "ONE PAGE, ONE CAMPAIGN TOKEN" in the App Store CTA section.
 - [ ] **[GATE] `Article` on every `/blog/*` page**, with `author`,
       `datePublished`, `dateModified`, `headline`, `image`.
 - [ ] **[GATE] `BreadcrumbList` on every `/blog/*` page.**

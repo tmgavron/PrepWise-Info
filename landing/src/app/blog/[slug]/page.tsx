@@ -15,11 +15,12 @@ import {
   getPostBySlug,
   needsTableOfContents,
 } from "@/lib/blog";
+import JsonLd from "@/components/JsonLd";
 import {
   articleJsonLd,
   authorPerson,
   breadcrumbList,
-  graph,
+  siteGraph,
   type Crumb,
 } from "@/lib/schema";
 import { OG_IMAGE } from "@/lib/constants";
@@ -91,9 +92,11 @@ export default async function BlogPostPage({
     { name: post.h1, path: `/blog/${post.slug}` },
   ];
 
-  // Article + BreadcrumbList + Person, in one graph, referencing the sitewide
-  // Organization by @id rather than declaring a second one.
-  const jsonLd = graph([
+  // The sitewide nodes + Article + BreadcrumbList + Person, in one graph. The
+  // post's campaign token is passed so the app node's installUrl/downloadUrl
+  // carry the SAME `blog-<slug>` token as the navbar and footer Download
+  // buttons, instead of the sitewide default.
+  const jsonLd = siteGraph(appStoreCt(post.slug), [
     articleJsonLd(post),
     breadcrumbList(crumbs),
     authorPerson,
@@ -104,10 +107,7 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       {/* Same token the footer CTA uses: the navbar Download button is the first
           App Store link on the page and would otherwise credit the sitewide
           default for an install this post earned. */}
