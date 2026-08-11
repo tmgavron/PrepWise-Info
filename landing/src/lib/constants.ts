@@ -191,7 +191,7 @@ export const SHOWCASE_SLIDES = [
   { src: "/promo/C4.png", caption: "Every ingredient, always on hand" },
   { src: "/promo/C5.png", caption: "Your recipe collection, beautifully organized" },
   { src: "/promo/C6.png", caption: "Track macros, without the hassle" },
-  { src: "/promo/C7.png", caption: "From fridge to plated, effortlessly" },
+  { src: "/promo/C7.png", caption: "From fridge to plate, without a shop" },
   { src: "/promo/C9.png", caption: "Designed for night owls, full dark mode"},
   { src: "/promo/C10.png", caption: "Get started in 60 seconds" },
 ] as const;

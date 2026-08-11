@@ -18,7 +18,11 @@ Before writing ANY page, post, headline, or meta description in this app:
 3. Read `seo/on-page-checklist.md` and satisfy every item that applies to the
    page type.
 4. Claim the primary keyword in `references/used-keywords.md` BEFORE writing.
-   One primary, one page, ever.
+   One primary, one page, ever. The backlog of unclaimed clusters is
+   `references/keyword-clusters.md`.
+
+Writing a blog post? `seo/CONTENT-CYCLE.md` is the whole procedure, start to
+PR, and it supersedes improvising one.
 
 Never invent a statistic, a user count, a rating, a testimonial, a story, or an
 author credential.

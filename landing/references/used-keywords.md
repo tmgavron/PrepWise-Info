@@ -67,6 +67,12 @@ That list is enforced page-by-page in
 | 5 | `pantry inventory app` | Use case | `/pantry-tracker` | SERP review 2026-07-26 | 2026-07-26 |
 | 6 | `macro tracking meal planner` | Use case | `/macro-meal-planner` | SERP review 2026-07-26 | 2026-07-26 |
 | 7 | `grocery list app` | Use case | `/grocery-list-app` | SERP review 2026-07-26 | 2026-07-26 |
+| 8 | `what can i make with what i have` | Blog post | `/blog/what-can-i-make-with-what-i-have` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 9 | `how to meal plan for the week` | Blog post | `/blog/how-to-meal-plan-for-the-week` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 10 | `meal prep for beginners` | Blog post | `/blog/meal-prep-for-beginners` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 11 | `how to meal plan on a budget` | Blog post | `/blog/how-to-meal-plan-on-a-budget` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 12 | `high protein meal prep` | Blog post | `/blog/high-protein-meal-prep` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 13 | `how to reduce food waste at home` | Blog post | `/blog/how-to-reduce-food-waste-at-home` | Google autocomplete 2026-07-26 | 2026-07-26 |
 
 **"SERP review" is not the same as keyword research.** It means the phrase was
 searched, the ranking pages were read, and the page was written to match their
@@ -231,6 +237,149 @@ from chosen recipes, and only Cooklist mentions subtracting what you already
 own. That subtraction is the whole page. Note the site's own voice file bans
 "grocery list generator" as PrepWise phrasing; it is recorded here as a search
 term people type, which is a different thing from copy we would write.*
+
+### 8. `what can i make with what i have` → /blog/what-can-i-make-with-what-i-have
+
+- **Primary source:** Google autocomplete, 2026-07-26 (seed: `what can i make
+  with what i have`; returned verbatim as the first suggestion). Full cluster:
+  [`keyword-clusters.md`](./keyword-clusters.md) §1.
+- **Search intent:** informational, at the moment of deciding dinner
+- **Page:** /blog/what-can-i-make-with-what-i-have (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| what can i make with what i have in my fridge | ✓ autocomplete |
+| what can i make with what i have in my pantry | ✓ autocomplete |
+| what can i cook with what i have | ✓ autocomplete |
+| what can i make with these ingredients | ✓ autocomplete |
+| what can i make with what i have in my kitchen | ✓ autocomplete |
+
+*Cluster audit: every secondary came from the autocomplete endpoint, not from
+inference. The single-ingredient tails (`what can i make with ground beef`,
+`...chicken breast`) were LEFT OUT: they are recipe queries whose SERP is
+photograph-heavy recipe sites, a page we cannot win, and folding them in here
+would make this post about nothing. `cook from what you have` stays a secondary
+of post 2 (the pantry method); this post is the decision procedure at 6pm.*
+
+### 9. `how to meal plan for the week` → /blog/how-to-meal-plan-for-the-week
+
+- **Primary source:** Google autocomplete, 2026-07-26 (seed: `how to meal plan`;
+  `for the week` was the first expansion). Cluster:
+  [`keyword-clusters.md`](./keyword-clusters.md) §2.
+- **Search intent:** informational
+- **Page:** /blog/how-to-meal-plan-for-the-week (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| how to meal plan for the week on a budget | ✓ autocomplete |
+| how to meal plan and prep | ✓ autocomplete |
+| how to meal plan for a family | ✓ autocomplete |
+| meal planning for the week | ✓ autocomplete |
+| weekly meal planning | (inferred) |
+
+*Cluster audit: four of five from autocomplete. The boundary with post 2
+(`how to meal plan from your pantry`) is deliberate and load-bearing: post 2 is
+the METHOD (start from the shelf), this is the WEEK'S PROCESS (which day, which
+meals, what to do about Wednesday). This post links to post 2 rather than
+restating it, which is the difference between a cluster and cannibalisation.
+`how to meal plan on a budget` was left out and given its own page (11) because
+the ranking pages for it are a different format.*
+
+### 10. `meal prep for beginners` → /blog/meal-prep-for-beginners
+
+- **Primary source:** Google autocomplete, 2026-07-26 (seed: `meal prep for`;
+  `beginners` in the first ten). Cluster:
+  [`keyword-clusters.md`](./keyword-clusters.md) §3.
+- **Search intent:** informational, first-timer
+- **Page:** /blog/meal-prep-for-beginners (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| how to start meal prepping | ✓ autocomplete |
+| easy meal prep for beginners | ✓ autocomplete |
+| how to meal prep for the week for beginners | ✓ autocomplete |
+| meal prep ideas for the week | ✓ autocomplete |
+| meal prep for beginners weight loss | ✓ autocomplete |
+
+*Cluster audit: all five from autocomplete. `meal prep for beginners weight
+loss` is recorded as a search term people type and is NOT written to on the
+page: PrepWise may not make outcome claims (`voice.md`). `sunday meal prep` was
+left out and kept as an open cluster; if it is ever written it must be the
+two-hour schedule, or it is this page again with a different title.*
+
+### 11. `how to meal plan on a budget` → /blog/how-to-meal-plan-on-a-budget
+
+- **Primary source:** Google autocomplete, 2026-07-26 (returned verbatim).
+  Cluster: [`keyword-clusters.md`](./keyword-clusters.md) §4.
+- **Search intent:** informational, with strong commercial adjacency
+- **Page:** /blog/how-to-meal-plan-on-a-budget (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| how to meal plan on a budget for 2 | ✓ autocomplete |
+| how to meal plan on a tight budget | ✓ autocomplete |
+| how to meal prep on a budget | ✓ autocomplete |
+| how to meal plan on a budget for 1 | ✓ autocomplete |
+| grocery budget | ✓ autocomplete |
+
+*Cluster audit: all five from autocomplete. `grocery budget for 2` and its
+household-size siblings were LEFT OUT and kept as their own open cluster: they
+are number-seeking queries that need a real household spend figure, and the only
+honest source is the USDA Food Plans reports, which is a different page. This
+page teaches the process and prints no household figure of its own.*
+
+### 12. `high protein meal prep` → /blog/high-protein-meal-prep
+
+- **Primary source:** Google autocomplete, 2026-07-26 (seed: `high protein
+  meal`; `meal prep` was the second suggestion). Cluster:
+  [`keyword-clusters.md`](./keyword-clusters.md) §5.
+- **Search intent:** informational, fitness-adjacent
+- **Page:** /blog/high-protein-meal-prep (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| high protein meal prep ideas | ✓ autocomplete |
+| high protein meal prep recipes | ✓ autocomplete |
+| meal prep ideas for the week high protein | ✓ autocomplete |
+| freezer meal prep high protein | ✓ autocomplete |
+| high protein meal plan | ✓ autocomplete |
+
+*Cluster audit: all five from autocomplete. The SERP is entirely recipe
+listicles, none of which explains how a protein number survives a week, so this
+post is the planning method with a building-block list rather than a recipe
+round-up. `how to meal plan for macros` was LEFT OUT and kept as its own open
+cluster: macros is four numbers, protein is one, and a page that tries to be
+both is a page about neither. No gram target, no outcome claim, no weight
+language: the cluster carries the highest claim risk in the file.*
+
+### 13. `how to reduce food waste at home` → /blog/how-to-reduce-food-waste-at-home
+
+- **Primary source:** Google autocomplete, 2026-07-26 (seed: `how to reduce food
+  waste`; `at home` was the first expansion). Cluster:
+  [`keyword-clusters.md`](./keyword-clusters.md) §6.
+- **Search intent:** informational
+- **Page:** /blog/how-to-reduce-food-waste-at-home (status: live)
+- **Claimed:** 2026-07-26
+
+| Secondary keyword | Source |
+|---|---|
+| how to stop wasting food at home | ✓ autocomplete |
+| how to avoid wasting food | ✓ autocomplete |
+| how to stop throwing away food | ✓ autocomplete |
+| how to prevent wasting food | ✓ autocomplete |
+| food waste app | ✓ autocomplete |
+
+*Cluster audit: all five from autocomplete. The SERP here is EPA, FDA, Mayo
+Clinic, NRDC and three university extensions, so the competitive bar is
+credibility rather than novelty: the page cites them and links them and prints
+no waste statistic of its own. The composting and municipal-collection tails
+were left out entirely — they are a real part of the topic and nothing PrepWise
+knows anything about.*
 
 ---
 

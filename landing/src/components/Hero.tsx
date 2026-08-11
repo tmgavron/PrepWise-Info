@@ -30,7 +30,7 @@ export default function Hero() {
           <p className="text-lg text-pw-text-subtle max-w-lg leading-relaxed">
             PrepWise sees exactly what&apos;s in your pantry and tells you
             every meal you can make right now. No more waste. No more takeout
-            panic. Just smart, effortless meal planning.
+            panic. Just the week, planned around food you already paid for.
           </p>
 
           {/* CTA */}

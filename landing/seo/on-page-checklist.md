@@ -162,8 +162,21 @@ which owns the general "plan my meals" query (registered in
       and at most one opinion (from
       [`../references/opinions.md`](../references/opinions.md)).
 - [ ] The page says somewhere who PrepWise is **not** for. See `voice.md`.
+- [ ] **[GATE] No banned SaaS vocabulary in visible copy** (`banned-copy`):
+      unlock, leverage, seamless, effortless, game-changer, empower, synergy,
+      cutting-edge, world-class, best-in-class, revolutionize, comprehensive,
+      holistic, utilize, and their obvious inflections. Matched on the rendered
+      text only, so a class name, a URL or a script cannot trip it, and **legal
+      pages are exempt** (different register, different author). Added
+      2026-07-26 after two posts in one batch shipped a drafted `unlock` and
+      `leverage` that three re-reads missed and a grep caught.
+      The banned CLAIMS (cure, treat, FDA approved) are deliberately NOT in the
+      gate: they are enforced in code on the ad and script side, and a page must
+      be able to state what PrepWise does not claim.
 - [ ] Re-read against `voice.md` → "Tells that it's AI-written" and delete
-      anything that matches.
+      anything that matches. The gate catches the vocabulary. It cannot catch a
+      paragraph that would read identically for a competitor's app, which is the
+      more important test.
 
 ## APP STORE CTA (home and article pages)
 
@@ -334,6 +347,10 @@ it. Below 1500 words a TOC is furniture between the reader and the answer.
 ---
 
 ## PUBLISHING A BLOG POST
+
+**The end-to-end procedure lives in [`CONTENT-CYCLE.md`](./CONTENT-CYCLE.md)**:
+pick a cluster, claim the primary, read the SERP, draft, verify, open a PR. This
+section is the mechanical part of it.
 
 A post is a flat TypeScript file in `content/blog/`, plus one line in
 `content/blog/index.ts`. No CMS and no MDX toolchain: the post is data, the

@@ -225,6 +225,63 @@ export function campaignTokensOn(html) {
   return [...new Set(appStoreUrls(html).map(campaignTokenOf))];
 }
 
+/**
+ * The words `references/voice.md` bans outright from user-facing copy.
+ *
+ * This was an honour-system checklist item until 2026-07-26, when two of the
+ * six posts in the S4 batch shipped a drafted `unlock` and `leverage` that a
+ * grep caught and three careful re-reads did not. That is the definition of a
+ * check that belongs in the gate: decidable from the built HTML, no judgement
+ * required. The rest of voice.md (rhythm, honesty, whether a sentence would
+ * read identically for a competitor) still needs a human and stays a checklist
+ * item.
+ *
+ * Only the unambiguous SaaS-vocabulary half of the list is enforced here.
+ * Deliberately NOT included: the banned CLAIMS (cure, treat, diagnose, FDA
+ * approved), because those are already enforced in code on the ad and script
+ * side (`content-lab/lib/brand-guardrail.js` PROHIBITED_PHRASES) and several of
+ * them are legitimate words in a sentence that reports the ban. A page must be
+ * able to say what it does not claim.
+ *
+ * Matched on VISIBLE TEXT only, so a class name, a URL, an inlined script or a
+ * JSON-LD blob cannot trip it. Verified clean across all 16 exported pages on
+ * the day it was added, so it is a floor rather than a migration.
+ */
+export const BANNED_COPY_TERMS = [
+  "unlock", "leverage", "seamless", "seamlessly", "effortless", "effortlessly",
+  "game-changer", "game changer", "empower", "synergy", "cutting-edge",
+  "world-class", "best-in-class", "revolutionize", "revolutionise",
+  "comprehensive", "holistic", "utilize", "utilise",
+];
+
+/**
+ * Body text as a reader sees it: scripts, styles, JSON-LD and every tag
+ * removed, entities decoded. Attribute values are dropped with their tags,
+ * which is what keeps a URL or a CSS class out of the copy checks.
+ */
+export function visibleText(html) {
+  const body = (html.match(/<body[^>]*>([\s\S]*)<\/body>/i) || [, html])[1];
+  return decodeEntities(
+    body
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
+      .replace(/<[^>]*>/g, " ")
+  ).replace(/\s+/g, " ").trim();
+}
+
+/** Banned terms present in the visible copy, lowercased and deduped. */
+export function bannedCopyTerms(html) {
+  const text = visibleText(html).toLowerCase();
+  return BANNED_COPY_TERMS.filter((term) => {
+    // Word-bounded so "unlock" does not fire on "unlocked" only by accident of
+    // substring: both are banned, but "utilise" must not fire inside a longer
+    // unrelated word, and a hyphenated term needs its own boundary handling.
+    const escaped = term.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+    return new RegExp(`(^|[^a-z])${escaped}[a-z]*([^a-z]|$)`).test(text);
+  });
+}
+
 function headingTexts(html) {
   const out = [];
   const re = /<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi;
@@ -431,6 +488,23 @@ export function checkPage({ rel, html, type, siteUrl }) {
     if (!/apps\.apple\.com/i.test(html)) {
       findings.push(err("appstore-cta", "no App Store link on the page"));
     }
+  }
+
+  // -- BANNED COPY VOCABULARY (references/voice.md)
+  //
+  // LEGAL pages are exempt, for the same reason the checklist exempts them from
+  // the CTA and FAQ requirements: they are a different register with a
+  // different author. "auto-renewing subscription plans that unlock premium
+  // features" in /terms is standard App Store subscription language, not
+  // marketing copy dressed up, and rewriting legal boilerplate to satisfy a
+  // voice rule would be the tail wagging the dog.
+  const banned = type === "legal" ? [] : bannedCopyTerms(html);
+  if (banned.length) {
+    findings.push(err(
+      "banned-copy",
+      `visible copy uses ${banned.map((t) => `"${t}"`).join(", ")}, banned by ` +
+        "references/voice.md. Rewrite the sentence; do not work around it"
+    ));
   }
 
   // ONE PAGE, ONE CAMPAIGN TOKEN.
@@ -999,6 +1073,7 @@ function selfTest() {
 
   const APP_LINK = (ct) =>
     `<a href="https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&amp;ct=${ct}&amp;mt=8">Download</a>`;
+  const SITEWIDE_DEFAULT_CT = "Landing%20Page%20Download%20Button";
 
   // --- the fixture that MUST pass
   check("a compliant page produces no errors", () => {
@@ -1054,6 +1129,54 @@ function selfTest() {
   });
 
   // --- entity decoding is measured, not the raw source
+  // --- banned copy vocabulary (references/voice.md)
+  check("a banned word in visible copy is an error", () => {
+    const found = codes(goodPage({
+      body: "<p>This unlocks your week.</p>" +
+        '<a href="https://apps.apple.com/app/apple-store/id6754949361">Download</a>',
+    }));
+    assert(found.includes("banned-copy"), `expected banned-copy, got ${JSON.stringify(found)}`);
+  });
+
+  check("every banned term is detected in prose", () => {
+    for (const term of BANNED_COPY_TERMS) {
+      assert(bannedCopyTerms(`<html><body><p>We ${term} the kitchen.</p></body></html>`).includes(term),
+        `"${term}" was not detected`);
+    }
+  });
+
+  check("a banned word in a URL, class name or script does not trip it", () => {
+    const html = goodPage({
+      body:
+        '<div class="seamless-grid"><a href="/blog/unlock-your-pantry">A post</a>' +
+        '<a href="https://apps.apple.com/app/apple-store/id6754949361">Download</a></div>' +
+        '<script>const comprehensive = 1;</script>',
+    });
+    assert(!codes(html).includes("banned-copy"), `false positive: ${JSON.stringify(codes(html))}`);
+  });
+
+  check("visibleText drops JSON-LD, so schema text cannot trip a copy rule", () => {
+    const html = '<html><body><script type="application/ld+json">{"x":"seamless"}</script>' +
+      '<p>Plain copy.</p></body></html>';
+    assert(bannedCopyTerms(html).length === 0, "JSON-LD leaked into visible text");
+    assert(visibleText(html) === "Plain copy.", `got "${visibleText(html)}"`);
+  });
+
+  check("legal pages are exempt from the copy vocabulary rule", () => {
+    const html = goodPage({ body: "<p>Subscriptions unlock premium features.</p>" });
+    assert(codes(html, "legal").includes("banned-copy") === false, "legal should be exempt");
+    assert(codes(html, "article").includes("banned-copy"), "a non-legal page must still fail");
+  });
+
+  check("the banned list is the SaaS vocabulary only, not the banned CLAIMS", () => {
+    // A page must be able to state what PrepWise does not claim. The claim ban
+    // is enforced on the ad/script side; duplicating it here would make the
+    // honest sentence unpublishable.
+    for (const claim of ["cure", "diagnose", "clinically proven", "fda approved"]) {
+      assert(!BANNED_COPY_TERMS.includes(claim), `"${claim}" must not be in BANNED_COPY_TERMS`);
+    }
+  });
+
   check("entities are decoded before the title is measured", () => {
     const raw = "PrepWise: AI Meal Planner &amp; Pantry Tracker for iPhone"; // 57 raw, 53 decoded
     assert(raw.length === 57, `raw is ${raw.length}`);
@@ -1349,7 +1472,7 @@ function selfTest() {
     withTempPages((root) => {
       writeUseCase(root, "a-page.ts", "a-page", "lp_a_page");
       writePagesIndex(root, ["a-page"]);
-      writeBuilt(root, "a-page", "Landing%20Page%20Download%20Button");
+      writeBuilt(root, "a-page", SITEWIDE_DEFAULT_CT);
       assert(ucCodes(root).includes("usecase-ct-not-rendered"), "expected usecase-ct-not-rendered");
     });
   });
@@ -1369,8 +1492,8 @@ function selfTest() {
           JSON.stringify({
             "@graph": [{
               "@type": "MobileApplication",
-              installUrl: "https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=Landing%20Page%20Download%20Button&mt=8",
-              downloadUrl: "https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=Landing%20Page%20Download%20Button&mt=8",
+              installUrl: `https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=${SITEWIDE_DEFAULT_CT}&mt=8`,
+              downloadUrl: `https://apps.apple.com/app/apple-store/id6754949361?pt=128248695&ct=${SITEWIDE_DEFAULT_CT}&mt=8`,
             }],
           }) +
           "</script></body></html>"
@@ -1421,7 +1544,7 @@ function selfTest() {
     const mixed = goodPage({
       body: APP_LINK("faq") +
         '<script type="application/ld+json">{"downloadUrl":' +
-        '"https://apps.apple.com/app/apple-store/id6754949361?ct=Landing%20Page%20Download%20Button"}</script>',
+        `"https://apps.apple.com/app/apple-store/id6754949361?ct=${SITEWIDE_DEFAULT_CT}"}</script>`,
     });
     assert(codes(mixed, "faq").includes("appstore-ct-inconsistent"),
       `expected appstore-ct-inconsistent, got ${JSON.stringify(codes(mixed, "faq"))}`);
@@ -1439,7 +1562,7 @@ function selfTest() {
         path.join(root, "out", "blog", "a-post.html"),
         "<html><body>" + APP_LINK("blog-a-post") +
           '<script type="application/ld+json">{"installUrl":' +
-          '"https://apps.apple.com/app/apple-store/id6754949361?ct=Landing%20Page%20Download%20Button"}</script>' +
+          `"https://apps.apple.com/app/apple-store/id6754949361?ct=${SITEWIDE_DEFAULT_CT}"}</script>` +
           "</body></html>"
       );
       assert(registryCodes(root).includes("blog-ct-mismatch"), "expected blog-ct-mismatch");
