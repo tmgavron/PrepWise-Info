@@ -72,6 +72,25 @@ expect_redirect() { # name url expected_location
   fi
 }
 
+# Split on the FIRST colon only. A value can legitimately contain ": " (alt-svc
+# does), and FS=": " would silently truncate it into a passing-looking prefix.
+expect_header() { # name url header-name expected-substring
+  local value
+  value=$(curl -sS -m 20 -o /dev/null -D - "$2" 2>/dev/null \
+    | tr -d '\r' | awk -v h="$(printf '%s' "$3" | tr 'A-Z' 'a-z')" '
+        { i = index($0, ":"); if (i == 0) next
+          n = tolower(substr($0, 1, i - 1)); v = substr($0, i + 1)
+          sub(/^ +/, "", v)
+          if (n == h) { print v; exit } }')
+  if [ -z "$value" ]; then
+    fail "$1" "$3 absent"
+  elif [ "${value#*"$4"}" = "$value" ]; then
+    fail "$1" "$3 is '$value'; expected to contain '$4'"
+  else
+    pass "$1"
+  fi
+}
+
 expect_no_redirect() { # name url
   local got code loc
   got=$(status_of "$2")
@@ -129,6 +148,19 @@ run_all_checks() {
   expect_200 "www /faq" "$WWW/faq"
   expect_200 "www /blog" "$WWW/blog"
   expect_no_redirect "www AASA served directly" "$WWW/.well-known/apple-app-site-association"
+
+  echo "== security headers are actually being served =="
+  # These lived in a `_headers` at the repo ROOT, which the asset binding never
+  # reads, so the site served NONE of them from launch until 2026-08-11 while
+  # CLAUDE.md documented all four as configured. Nothing reported it: a missing
+  # response header is invisible in a deploy log, in the build, and in the
+  # browser. Asserting them live is the only thing that can tell the difference
+  # between "configured" and "in effect".
+  expect_header "www X-Frame-Options" "$WWW/" "X-Frame-Options" "DENY"
+  expect_header "www X-Content-Type-Options" "$WWW/" "X-Content-Type-Options" "nosniff"
+  expect_header "www Referrer-Policy" "$WWW/" "Referrer-Policy" "strict-origin-when-cross-origin"
+  expect_header "www Permissions-Policy" "$WWW/" "Permissions-Policy" "camera=()"
+  expect_header "www HSTS" "$WWW/" "Strict-Transport-Security" "max-age="
 
   echo "== AASA content is intact on both hosts =="
   aasa_apex=$(curl -sS -m 20 "$APEX/.well-known/apple-app-site-association" 2>/dev/null)

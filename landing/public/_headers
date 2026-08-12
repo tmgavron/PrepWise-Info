@@ -1,2 +1,42 @@
+# Response headers for the static export. Cloudflare's asset binding reads this
+# file, which is why /.well-known/apple-app-site-association below actually
+# serves as application/json - that is the live proof this file is honoured.
+#
+# THIS is the deployed header config. There is a `_headers` at the repo ROOT
+# with a near-identical block that has never been served a single request:
+# wrangler.toml points the asset binding at ./landing/out, so nothing at the
+# repo root is reachable. It was deleted on 2026-08-11 rather than left as a
+# decoy, because a security-header file that looks deployed and is not is worse
+# than no file at all. Verified 2026-08-11: the live site carried none of the
+# four headers below.
+#
+# Rules are merged, not first-match-wins, so the /* block applies to the AASA
+# too. They set different header names, so nothing here overrides anything.
+
+/*
+  # Clickjacking. Nothing on this site is meant to be framed anywhere.
+  X-Frame-Options: DENY
+  # Stop the browser second-guessing our Content-Type, which is what makes the
+  # AASA rule below meaningful rather than advisory.
+  X-Content-Type-Options: nosniff
+  # Send the full URL same-origin, origin-only cross-origin, nothing over http.
+  Referrer-Policy: strict-origin-when-cross-origin
+  # The app asks for these; the marketing site never should.
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  # 180 days, no includeSubDomains, NO preload. Deliberately conservative:
+  # preload is effectively irreversible, and it is not needed here.
+  #
+  # This is defence in depth, NOT the fix for http:// URLs being indexed
+  # separately. HSTS only binds a browser that has already completed one https
+  # request, so it does nothing for a crawler's first visit and nothing for the
+  # worker's 301 responses, which are not assets and never see this file.
+  # Forcing the upgrade is zone-level: Cloudflare -> SSL/TLS -> Edge
+  # Certificates -> Always Use HTTPS.
+  Strict-Transport-Security: max-age=15552000
+
+# Apple fetches the AASA with a strict parser and will not accept it as
+# text/plain, which is what the extensionless path would otherwise serve it as.
+# Breaking this breaks Universal Links for every recipe share already in the
+# wild, silently. See CLAUDE.md -> "Apex -> www redirect, and the two exemptions".
 /.well-known/apple-app-site-association
   Content-Type: application/json

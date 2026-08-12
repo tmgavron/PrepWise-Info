@@ -502,13 +502,35 @@ Requires `wrangler login` first (browser-based OAuth).
 
 ## Security Headers
 
-Configured in `_headers`:
+Configured in **`landing/public/_headers`**, which the asset binding reads out
+of `landing/out/`:
+
 - X-Frame-Options: DENY
 - X-Content-Type-Options: nosniff
 - Referrer-Policy: strict-origin-when-cross-origin
 - Permissions-Policy: camera=(), microphone=(), geolocation=()
-- HTML: 1 hour cache
-- Logo: 7 day immutable cache
+- Strict-Transport-Security: max-age=15552000 (180 days, no preload)
+
+Until 2026-08-11 this section described a `_headers` at the repo ROOT, and the
+live site served **none** of these headers. `wrangler.toml` points the asset
+binding at `./landing/out`, so the root file had never answered a request. The
+root copy is deleted; a security-header file that reads as deployed and is not
+is worse than no file, because it stops anyone looking again.
+
+`scripts/verify-live-routing.sh` now asserts all five on a live response after
+every deploy. A missing response header is invisible in the build, in the
+deploy log, and in a browser, so nothing short of checking the live site can
+tell "configured" from "in effect". Same reason the rest of that script exists.
+
+The old caching rules (`/*.html` 1 hour, `/logo.svg` 7 days) were NOT carried
+over. `/*.html` matched nothing reachable: every `.html` path 307s to its
+extensionless form (see "Every `.html` asset 307s to its extensionless path"),
+so no request ever arrives at one.
+
+**HSTS is not the fix for `http://` URLs being indexed separately.** It only
+binds a browser that has already completed one HTTPS request, so it does
+nothing on a crawler's first visit. Forcing the upgrade is zone-level:
+Cloudflare → SSL/TLS → Edge Certificates → **Always Use HTTPS**.
 
 ## Updating Legal Documents
 
