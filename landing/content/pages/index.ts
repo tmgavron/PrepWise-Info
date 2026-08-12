@@ -1,6 +1,7 @@
 import type { UseCasePage } from "@/lib/usecase";
 import { page as mealPrepApp } from "./meal-prep-app";
 import { page as pantryTracker } from "./pantry-tracker";
+import { page as pantryMealPlanner } from "./pantry-meal-planner";
 import { page as macroMealPlanner } from "./macro-meal-planner";
 import { page as groceryListApp } from "./grocery-list-app";
 
@@ -19,6 +20,7 @@ import { page as groceryListApp } from "./grocery-list-app";
 export const USE_CASE_PAGES: readonly UseCasePage[] = [
   mealPrepApp,
   pantryTracker,
+  pantryMealPlanner,
   macroMealPlanner,
   groceryListApp,
 ];
