@@ -31,8 +31,8 @@ export const post: BlogPost = {
     "what can i make with these ingredients",
     "what can i make with what i have in my kitchen",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: recipes matched to the food already in your kitchen",

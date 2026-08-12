@@ -37,8 +37,8 @@ export const post: BlogPost = {
     "how to prevent wasting food",
     "food waste app",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: tracking what is in your kitchen so food gets cooked before it goes off",

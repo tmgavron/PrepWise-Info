@@ -35,8 +35,8 @@ export const post: BlogPost = {
     "freezer meal prep high protein",
     "high protein meal plan",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: protein-led meal prep with macros calculated per recipe",

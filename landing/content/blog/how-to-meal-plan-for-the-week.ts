@@ -31,8 +31,8 @@ export const post: BlogPost = {
     "meal planning for the week",
     "weekly meal planning",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: a week of meals planned around what is already in your kitchen",

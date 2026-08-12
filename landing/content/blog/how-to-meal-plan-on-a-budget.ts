@@ -35,8 +35,8 @@ export const post: BlogPost = {
     "how to meal plan on a budget for 1",
     "grocery budget",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: a budget meal plan built from the food already in your kitchen",

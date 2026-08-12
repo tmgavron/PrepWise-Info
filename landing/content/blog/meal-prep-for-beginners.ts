@@ -31,8 +31,8 @@ export const post: BlogPost = {
     "meal prep ideas for the week",
     "meal prep for beginners weight loss",
   ],
-  publishedAt: "2026-07-26",
-  updatedAt: "2026-07-26",
+  publishedAt: "2026-08-11",
+  updatedAt: "2026-08-11",
   hero: {
     src: OG_IMAGE.url,
     alt: "PrepWise: meal prep planned from the ingredients already in your kitchen",
