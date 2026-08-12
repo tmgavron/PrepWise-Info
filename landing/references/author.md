@@ -27,6 +27,27 @@ Verified from real sources on 2026-07-26.
 
 ---
 
+## Bio, byline — APPROVED
+
+**Approved verbatim by Trent, 2026-08-11.** This is the sentence rendered in the
+author card under every blog post and serialized into `Person.description` in the
+JSON-LD. The two must stay byte-identical.
+
+> Founder of PrepWise LLC, the team bringing you the PrepWise App.
+
+Deliberately shorter than the drafts below, and deliberately free of
+credentials. It says the one thing that is checkable from the App Store
+publisher record and stops. When the `TODO(trent: confirm)` items further down
+are filled in, the E-E-A-T detail belongs on an `/about` page that this card can
+then link to, not crammed back into three lines under a post.
+
+Consumers, both of which must change together:
+
+- `src/components/blog/AuthorCard.tsx` (visible text)
+- `src/lib/schema.ts` -> `authorPerson.description` (JSON-LD)
+
+---
+
 ## Bio, short (about 25 words) — for post bylines
 
 **DRAFT:**

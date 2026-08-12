@@ -102,8 +102,10 @@ export function appNode(pageCt?: string) {
  * Deliberately minimal. `url`, `image`, and `sameAs` are omitted because the
  * /about page, a headshot, and the profile links do not exist yet, and the
  * checklist's rule is that a schema field must be backed by something the page
- * actually supports. The description uses only the CONFIRMED facts in
- * references/author.md, not its draft bios, which are still awaiting Trent.
+ * actually supports. The description is the APPROVED byline bio in
+ * references/author.md, and must stay byte-identical to the visible text in
+ * components/blog/AuthorCard.tsx: schema that disagrees with the page it sits
+ * on is the mismatch Google's structured-data guidelines exist to catch.
  */
 export const PERSON_ID = `${SITE_URL}/about#trent`;
 
@@ -114,7 +116,7 @@ export const authorPerson = {
   jobTitle: "Founder",
   worksFor: { "@id": ORGANIZATION_ID },
   description:
-    "Founder of PrepWise LLC. He built PrepWise, an iPhone meal planner and pantry tracker, and shipped it to the App Store in June 2026.",
+    "Founder of PrepWise LLC, the team bringing you the PrepWise App.",
 } as const;
 
 export type Crumb = { name: string; path: string };
