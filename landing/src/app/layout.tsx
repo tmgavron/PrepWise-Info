@@ -39,9 +39,21 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
+  // These four links are the ONLY icon links on the page, and that is the point.
+  //
+  // Until 2026-08-11 a second favicon lived at src/app/favicon.ico, which the App
+  // Router auto-injects ahead of everything declared here. It was a 16x16 + 32x32
+  // ICO announced to crawlers as `sizes="256x256"`, so the FIRST icon link Google
+  // read was both too small for its stated rule ("a multiple of 48px square") and
+  // lying about its size. That is why the search result rendered the default globe
+  // while the browser tab, which just takes the best of the four, looked correct.
+  //
+  // Deleting that file is what puts this block in charge. Do not re-add an
+  // app/favicon.* or app/icon.* file: it silently takes precedence again.
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 96x96 144x144 192x192", type: "image/x-icon" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],

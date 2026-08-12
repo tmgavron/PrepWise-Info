@@ -3,8 +3,10 @@
 
   public/og-image.png         1200x630 Open Graph / Twitter card
   public/apple-touch-icon.png 180x180 iOS home-screen icon
+  public/favicon.ico          multi-resolution icon, 16 -> 192
+  public/icon-192.png         192x192 PNG favicon
 
-Both are COMMITTED (the static export ships them as-is); this script exists so
+All are COMMITTED (the static export ships them as-is); this script exists so
 they are reproducible from the brand source files instead of being opaque
 binaries nobody can regenerate.
 
@@ -30,6 +32,15 @@ LOGO = ROOT / "public" / "brand" / "prepwise-logo.png"
 ICON = ROOT / "public" / "brand" / "prepwise-icon.png"
 OUT = ROOT / "public" / "og-image.png"
 OUT_ICON = ROOT / "public" / "apple-touch-icon.png"
+OUT_FAVICON = ROOT / "public" / "favicon.ico"
+OUT_PNG_ICON = ROOT / "public" / "icon-192.png"
+
+# Google renders the search-result favicon at 16x16 but REJECTS the source if it
+# is not "a multiple of 48px square" (Search Central, "Define a favicon"). Every
+# entry above 32 is therefore a 48 multiple, and the LARGEST entry is 192 rather
+# than the conventional 256, so whichever one Google reads is compliant.
+# 16 and 32 stay for browser tabs, which do not care about the 48 rule.
+FAVICON_SIZES = [16, 32, 48, 96, 144, 192]
 
 TAGLINE = "Meal Planner & Pantry Tracker"
 SUBLINE = "Plan meals from what you already have. Track macros. Shop smarter."
@@ -76,6 +87,23 @@ def make_apple_touch_icon() -> None:
     print(f"wrote {OUT_ICON} (180x180)")
 
 
+def make_favicons() -> None:
+    """The tab icon AND the icon Google puts beside the result.
+
+    Alpha is KEPT here, unlike the apple-touch icon: the brand mark is a rounded
+    square with transparent corners, and a browser tab or a search result can be
+    on either a light or a dark ground. Flattening onto the brand navy would put
+    a hard square behind it on white.
+    """
+    src = Image.open(ICON).convert("RGBA")
+
+    src.save(OUT_FAVICON, "ICO", sizes=[(s, s) for s in FAVICON_SIZES])
+    print(f"wrote {OUT_FAVICON} ({', '.join(f'{s}x{s}' for s in FAVICON_SIZES)})")
+
+    src.resize((192, 192), Image.LANCZOS).save(OUT_PNG_ICON, "PNG", optimize=True)
+    print(f"wrote {OUT_PNG_ICON} (192x192)")
+
+
 def main() -> None:
     for asset in (LOGO, ICON):
         if not asset.exists():
@@ -107,6 +135,7 @@ def main() -> None:
     print(f"wrote {OUT} ({W}x{H})")
 
     make_apple_touch_icon()
+    make_favicons()
 
 
 if __name__ == "__main__":

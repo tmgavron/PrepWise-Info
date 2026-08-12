@@ -49,11 +49,13 @@ PrepWise-Info/
 │   │   ├── robots.ts       ← GENERATES out/robots.txt at build time
 │   │   └── sitemap.ts      ← GENERATES out/sitemap.xml at build time
 │   ├── src/lib/constants.ts ← SITE_URL, SITE_ROUTES, nav/legal links, features
-│   ├── scripts/make-brand-assets.py ← regenerates og-image.png + apple-touch-icon.png
+│   ├── scripts/make-brand-assets.py ← regenerates og-image, apple-touch-icon, favicon.ico, icon-192
 │   └── public/
 │       ├── logo.svg        ← PrepWise production logo
 │       ├── og-image.png    ← 1200x630 social card (generated, committed)
 │       ├── apple-touch-icon.png ← 180x180 iOS icon (generated, committed)
+│       ├── favicon.ico     ← 6-entry ICO, 16→192 (generated, committed)
+│       ├── icon-192.png    ← 192x192 PNG favicon (generated, committed)
 │       ├── .well-known/    ← apple-app-site-association (Universal Links)
 │       └── screenshots/    ← Hero section screenshots
 ├── index.html              ← Legacy legal docs landing (NOT deployed - see below)
@@ -321,6 +323,37 @@ perfectly happily.
 **Adding a page means:** claim its primary in `used-keywords.md` first, write it
 against the checklist, add it to `SITE_ROUTES` in `landing/src/lib/constants.ts`
 so the generated sitemap picks it up, and let the gate check it.
+
+### The favicon Google shows beside the result (2026-08-11)
+
+**There must be exactly ONE place that declares icons: `icons` in
+`src/app/layout.tsx`.** Do not add `src/app/favicon.*` or `src/app/icon.*`. The
+App Router treats those as metadata files and auto-injects a `<link rel="icon">`
+**ahead of** everything in that block, silently taking over the first icon link
+on the page, which is the one Google reads.
+
+That is exactly what shipped until 2026-08-11: `src/app/favicon.ico` held a
+16x16 + 32x32 ICO and Next announced it as `sizes="256x256"`. The 534x534 file
+sitting in `public/favicon.ico` was never served, and was a PNG with an `.ico`
+extension anyway. Browser tabs looked right (a tab picks the best of the four
+links); Google showed the default globe.
+
+Two rules, both from Search Central's "Define a favicon":
+
+1. **Every icon 48px or larger must be a multiple of 48.** `FAVICON_SIZES` in
+   `make-brand-assets.py` is `[16, 32, 48, 96, 144, 192]` for that reason, and
+   the largest entry is 192 rather than the conventional 256 so that whichever
+   entry Google reads is compliant. A `/icon-192.png` ships alongside it.
+2. **The favicon URL must be stable.** `/favicon.ico` and `/icon-192.png` are
+   permanent. Re-point them at new art if the brand changes; do not rename them.
+
+The icons are generated, not hand-made: `python3 landing/scripts/make-brand-assets.py`
+rebuilds all four from `public/brand/prepwise-icon.png` and is byte-reproducible.
+
+A favicon change takes days to weeks to appear in results, and only after Google
+re-crawls the home page. Request indexing for `/` in Search Console after
+deploying one; there is no other way to hurry it, and nothing in CI can verify
+it because the choice happens on Google's side.
 
 ### The FAQ and the blog (S3a, 2026-07-26)
 
