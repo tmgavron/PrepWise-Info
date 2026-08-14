@@ -99,6 +99,26 @@ Ranked by intent strength and by how directly they feed a use-case page. The
 | 20 | `how to shop without a list` | informational | contrarian how-to | `/grocery-list-app` | open |
 | 21 | `best meal planning app for iphone` | commercial | comparison | `/`, all use-case pages | open (**needs care**) |
 | 22 | `what can i make with chicken breast` | informational | recipe listicle | `/pantry-tracker` | open (**weak fit**) |
+| 23 | `pantry meal planner` | commercial | use-case page | `/pantry-tracker`, `/grocery-list-app` | **CONSUMED** → `/pantry-meal-planner` |
+
+---
+
+### 23. `pantry meal planner` — **CONSUMED** → `/pantry-meal-planner`
+
+**Added retroactively on 2026-08-11, after the page was written.** It was never
+in this backlog, which is the interesting part: it came from Search Console, not
+from autocomplete. On 2026-08-11 it was the ONLY non-brand query the site had an
+impression for (1 impression, position 66) against 60 brand impressions.
+
+**The lesson worth keeping:** this list was built entirely from autocomplete
+seeds on 2026-07-26, before the site had any search data at all. Now that data
+exists, it outranks a seed, and re-mining Search Console belongs at the top of
+the next cluster pass rather than in this file's blind spot. Nothing else in
+these 22 rows has been checked against real impressions.
+
+Full cluster entry, SERP notes, and the boundary against `/`, `/pantry-tracker`
+and `/blog/how-to-meal-plan-from-your-pantry`:
+[`used-keywords.md`](./used-keywords.md) → 14.
 
 ---
 
@@ -534,7 +554,7 @@ kept apart: this post links to that one rather than restating it.*
 
 ## Coverage, honestly
 
-- 22 clusters. 6 consumed. 16 open.
+- 23 clusters. 7 consumed. 16 open.
 - **11** are blocked or downgraded by something real: a missing artefact
   (16), a number we do not have (15), a claim we may not make (19, 12), a format
   we cannot produce (22, 17), an intent mismatch (14), an unverified seed (20),

@@ -73,6 +73,7 @@ That list is enforced page-by-page in
 | 11 | `how to meal plan on a budget` | Blog post | `/blog/how-to-meal-plan-on-a-budget` | Google autocomplete 2026-07-26 | 2026-07-26 |
 | 12 | `high protein meal prep` | Blog post | `/blog/high-protein-meal-prep` | Google autocomplete 2026-07-26 | 2026-07-26 |
 | 13 | `how to reduce food waste at home` | Blog post | `/blog/how-to-reduce-food-waste-at-home` | Google autocomplete 2026-07-26 | 2026-07-26 |
+| 14 | `pantry meal planner` | Use case | `/pantry-meal-planner` | **Search Console impression data 2026-08-11** + SERP review | 2026-08-11 |
 
 **"SERP review" is not the same as keyword research.** It means the phrase was
 searched, the ranking pages were read, and the page was written to match their
@@ -380,6 +381,54 @@ credibility rather than novelty: the page cites them and links them and prints
 no waste statistic of its own. The composting and municipal-collection tails
 were left out entirely — they are a real part of the topic and nothing PrepWise
 knows anything about.*
+
+---
+
+### 14. `pantry meal planner` → /pantry-meal-planner
+
+- **Primary source:** **Google Search Console, Queries export, 2026-08-11.** The
+  only NON-BRAND query the site had received an impression for at that point
+  (1 impression, position 66). Every other query in the export was `prepwise` or
+  a misspelling of it. Real impression data outranks an autocomplete seed, which
+  is why this jumped ahead of the open clusters in
+  [`keyword-clusters.md`](./keyword-clusters.md). It is not in that file.
+- **Search intent:** commercial, in a SERP that leans informational (see below)
+- **Page:** /pantry-meal-planner (status: live)
+- **Claimed:** 2026-08-11
+
+| Secondary keyword | Source |
+|---|---|
+| pantry meal planning | (inferred) |
+| meal planner using what i have | (inferred) |
+| plan meals from pantry | (inferred) |
+| pantry based meal plan | (inferred) |
+
+*Cluster audit: the primary is the only term here with evidence behind it. All
+four secondaries are inferred from the phrasing of the ranking pages, not from
+an export, and none should be treated as researched.*
+
+*SERP, 2026-08-11: mixed and mostly informational. Three blog posts with sample
+plans (The Kitchn, Under the Median, Smart In The Kitchen, roughly 800-1,500
+words), a Notion "Meal Planner & Digital Pantry" template, a Penn State
+Extension `.edu` page, and two apps (KitchenPal on Google Play, "Recipe by
+Pantry: Meal Planner" on the App Store). All three blog results cover the same
+ground: take stock, keep staples, here are sample meals. None treats the pantry
+as a live input the plan is checked against, and the two ranking apps are
+inventory-first or recipe-first rather than planner-first. That is the gap the
+page is written into, and it is why the page carries more method than the other
+four use-case pages.*
+
+*Boundary, because this sits between three existing claims and the risk of
+cannibalising one of them is real. `/` owns `ai meal planner`, the generic
+"decide my week" query. `/pantry-tracker` owns `pantry inventory app`, the
+inventory itself. `/blog/how-to-meal-plan-from-your-pantry` owns the METHOD done
+by hand. This page owns the TOOL that runs the method. If the home page is ever
+rewritten around a pantry-first primary, these two collide and this entry must
+be resolved in the same commit.*
+
+*Not chased: the "food pantry" (food-bank) sense of the query, which is live in
+this SERP and is what the Penn State result serves. Different searcher, and not
+one PrepWise should be answering.*
 
 ---
 
