@@ -25,7 +25,7 @@ export const SITE_ROUTES = [
   { path: "/", lastModified: "2026-07-26", changeFrequency: "weekly", priority: 1.0 },
   { path: "/faq", lastModified: "2026-07-26", changeFrequency: "monthly", priority: 0.8 },
   { path: "/blog", lastModified: "2026-08-11", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/privacy", lastModified: "2026-07-01", changeFrequency: "yearly", priority: 0.5 },
+  { path: "/privacy", lastModified: "2026-09-08", changeFrequency: "yearly", priority: 0.5 },
   { path: "/terms", lastModified: "2026-03-09", changeFrequency: "yearly", priority: 0.5 },
 ] as const;
 

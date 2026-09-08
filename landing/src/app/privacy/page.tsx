@@ -49,7 +49,7 @@ export default function PrivacyPage() {
       <LegalLayout
         title="Privacy Policy"
         effectiveDate="March 9, 2026"
-        lastUpdated="July 1, 2026"
+        lastUpdated="September 8, 2026"
       >
         <p>
           PrepWise LLC (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is committed to protecting your privacy.
@@ -84,11 +84,16 @@ export default function PrivacyPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-pw-text mb-3">3. AI Assistant</h2>
+          <h2 className="text-xl font-semibold text-pw-text mb-3">3. AI Features</h2>
           <p>
-            The App includes an AI-powered assistant that processes your messages to generate meal plans, recipe
-            suggestions, and nutritional guidance. Messages sent to the assistant may be transmitted to our AI service
-            provider for processing. We do not use your assistant messages to train third-party AI models.
+            The App uses <strong className="text-pw-text">OpenAI</strong> to power its AI assistant, recipe
+            generation, pantry and receipt photo scanning, and nutrition estimates (including &ldquo;Generate
+            Macros&rdquo; and &ldquo;Generate Meal Info&rdquo;). When you use one of these features, OpenAI processes
+            the text and photos you send, along with your pantry items, saved recipe titles, planned meals, shopping
+            list, display name, and food preferences, so it can generate a response. We do not use this data to train
+            OpenAI&apos;s or any other third party&apos;s AI models. OpenAI is contractually required to protect your
+            data under the same confidentiality and data-protection obligations as the other sub-processors described
+            in Section 5.
           </p>
         </section>
 
@@ -126,7 +131,7 @@ export default function PrivacyPage() {
             <li><strong className="text-pw-text">Supabase (cloud hosting, authentication &amp; storage):</strong> Stores your account, the content you create, and uploaded images, and handles sign-in.</li>
             <li><strong className="text-pw-text">Superwall (subscription management):</strong> We share your subscription status and a user identifier with Superwall to manage and display subscription offers and entitlements.</li>
             <li><strong className="text-pw-text">PostHog (product analytics)</strong> and <strong className="text-pw-text">Sentry (crash &amp; error monitoring):</strong> See Section 4 for the data collected, purposes, and links to their policies.</li>
-            <li><strong className="text-pw-text">AI processing:</strong> Assistant messages you send are transmitted to our AI service provider as described in Section 3.</li>
+            <li><strong className="text-pw-text">AI processing (OpenAI):</strong> As described in Section 3, we share the text and photos you submit to AI-powered features, along with pantry, recipe, calendar, and shopping-list context, your display name, and your preferences, with OpenAI so it can generate a response. OpenAI does not use this data to train its models and is held to the same confidentiality and data-protection obligations as our other sub-processors.</li>
             <li><strong className="text-pw-text">In-App Purchases:</strong> Apple processes all subscription payments. We receive limited transaction metadata (e.g., subscription status) but never your full payment details.</li>
             <li><strong className="text-pw-text">Legal Requirements:</strong> Where required by law or to protect the rights and safety of our users.</li>
           </ul>
